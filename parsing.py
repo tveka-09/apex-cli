@@ -74,7 +74,7 @@ print ("")
 print (BOLD +WHITE + 'Skapad: ' +OKCYAN  +skapad +END + '\n' + 'Datum: ' +OKCYAN +datum +END + '\n' +  'Startadress: ' +OKCYAN +start +END + '\n' +  'Stoppadress: ' +OKCYAN +stopp +END + '\n' +  'T&R: ' +OKCYAN +spec +END + '\n' +  'Km: ' +OKCYAN +Ny_Distans +END)
 print ("")
 
-ychoice = ['yes','Yes', 'YES', 'Y', 'y', 'Ja', 'JA', 'J', 'j']
+ychoice = ['yes', 'Yes', 'YES', 'Y', 'y', 'Ja', 'JA', 'J', 'j']
 
 Continue = input('Vill du mata in datat i databasen? (Ja / Nej) ')
 if Continue in ychoice:
