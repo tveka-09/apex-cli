@@ -74,16 +74,18 @@ print ("")
 print (BOLD +WHITE + 'Skapad: ' +OKCYAN  +skapad +END + '\n' + 'Datum: ' +OKCYAN +datum +END + '\n' +  'Startadress: ' +OKCYAN +start +END + '\n' +  'Stoppadress: ' +OKCYAN +stopp +END + '\n' +  'T&R: ' +OKCYAN +spec +END + '\n' +  'Km: ' +OKCYAN +Ny_Distans +END)
 print ("")
 
-Continue = input('Vill du mata in datat i databasen? (Ja eller Nej) ')
-if Continue == 'yes' or Continue == 'Yes' or Continue == 'YES' or Continue == 'Y' or Continue == 'y' or Continue == 'Ja' or Continue == 'JA' or Continue == 'J' or Continue == 'j':
-  print("")
+ychoice = ['yes','Yes', 'YES', 'Y', 'y', 'Ja', 'JA', 'J', 'j']
+
+Continue = input('Vill du mata in datat i databasen? (Ja / Nej) ')
+if Continue in ychoice:
+  print('')
 else:
-  print ("")
-  print ("Ok, avslutar scriptet.")
-  print ("")
-  print ("Tar bort tempoutput.txt")
+  print ('')
+  print ('Ok, avslutar scriptet.')
+  print ('')
+  print ('Tar bort tempoutput.txt')
   os.remove(tempoutput)
-  print ("")
+  print ('')
   sys.exit()
 
 mycursor = mydb.cursor()
