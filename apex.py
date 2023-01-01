@@ -43,11 +43,11 @@ UNDERLINE = '\033[4m'
 WHITE =  '\u001b[37m'
 
 def Logo():
-    num = 5
+    num = 10
     for _ in range(num):
         os.system('clear')
         print(''), print('')
-        print (GREEN + system_name+version)
+        print (BOLD + system_name+version)
         print(''), print('')
         sleep(0.1)
         os.system('clear')

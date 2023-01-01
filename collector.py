@@ -25,7 +25,7 @@ start = input("Startadress: ")
 
 stopp = input("Stoppadress: ")
 
-spec = input("T & R? (Ja eller Nej) ")
+spec = input("T & R? (Ja / Nej) ")
 
 url = ""+googlemaps+""+start+"&destinations="+stopp+"&departure_time=now&key="+KEY+""
 
