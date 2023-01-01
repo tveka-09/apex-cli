@@ -19,7 +19,6 @@ GREEN = '\033[92m'
 YELLOW = '\033[93m'
 RED = '\033[91m'
 BOLD = '\033[1m'
-UNDERLINE = '\033[4m'
 END = '\033[0m'
 HEADER = '\033[95m'
 OKBLUE = '\033[94m'
@@ -29,7 +28,6 @@ WARNING = '\033[93m'
 FAIL = '\033[91m'
 ENDC = '\033[0m'
 BOLD = '\033[1m'
-UNDERLINE = '\033[4m'
 WHITE =  '\u001b[37m'
 
 tempoutput = '/home/apex/apex-cli/tempoutput.txt'
@@ -74,25 +72,25 @@ print ("")
 print (BOLD +WHITE + 'Skapad: ' +OKCYAN  +skapad +END + '\n' + 'Datum: ' +OKCYAN +datum +END + '\n' +  'Startadress: ' +OKCYAN +start +END + '\n' +  'Stoppadress: ' +OKCYAN +stopp +END + '\n' +  'T&R: ' +OKCYAN +spec +END + '\n' +  'Km: ' +OKCYAN +Ny_Distans +END)
 print ("")
 
-ychoice = ['yes', 'Yes', 'YES', 'Y', 'y', 'Ja', 'JA', 'J', 'j']
+ychoice = ['yes', 'Yes', 'YES', 'Y', 'y', 'ja', 'Ja', 'JA', 'J', 'j']
 
-Continue = input('Vill du mata in datat i databasen? (Ja / Nej) ')
+Continue = input('Mata in i databasen? (Ja / Nej) ')
 if Continue in ychoice:
   print('')
 else:
   print ('')
-  print ('Ok, avslutar scriptet.')
+  print ('Ok, quit.')
   print ('')
-  print ('Tar bort tempoutput.txt')
+  print ('Deleting tempoutput.txt')
   os.remove(tempoutput)
   print ('')
   sys.exit()
 
 mycursor = mydb.cursor()
 
-if spec == 'Ja' or spec == 'JA' or spec == 'ja' or spec == 'j' or spec == 'J' or spec == 'Yes' or spec == 'yes' or spec == 'YES' or spec == 'y' or spec == 'Y':
+if spec in ychoice:
   print ('')
-  print ('Eftersom det var T&R så tog vi x2 på km: ' +Ny_Distans + ' när vi matade in det i databasen')
+  print ('T&R so we took x2 on km: ' +Ny_Distans + ' when we added it to the database')
   print ('')
   sql = "INSERT INTO milrapport (skapad, datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s, %s * 2)"
 else:
@@ -109,8 +107,8 @@ result = mycursor.fetchone()
 print('Skapad:', str(result[0]), ' Datum:', str(result[1]), ' Start:', str(result[2]), ' Stopp:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
 print ('')
 
-allrows = input('Vill du se alla rader i databasen? (Ja eller Nej) ')
-if allrows == 'yes' or allrows == 'Yes' or allrows == 'YES' or allrows == 'Y' or allrows == 'y' or allrows == 'Ja' or allrows == 'JA' or allrows == 'J' or allrows == 'j':
+allrows = input('Vill du se alla rader i databasen? (Ja / Nej) ')
+if allrows in ychoice:
   print('')
   allrowssql = "SELECT * FROM apex.milrapport ORDER BY id ASC"
   mycursor.execute(allrowssql)
@@ -124,19 +122,19 @@ else:
 kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM milrapport"
 mycursor.execute(kmsql)
 km = mycursor.fetchone()
-print('Totalt km: ', float(km[0]), 'Km')
+print('Total km: ', float(km[0]), 'Km')
 print('')
 
 milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM milrapport"
 mycursor.execute(milsql)
 mil = mycursor.fetchone()
-print('Totalt mil: ', float(mil[0]), 'Mil')
+print('Total mil: ', float(mil[0]), 'Mil')
 print('')
 
 seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM milrapport"
 mycursor.execute(seksql)
 sek = mycursor.fetchone()
-print('Summa sek: ', float(sek[0]), 'Kr')
+print('Sum sek: ', float(sek[0]), 'Kr')
 print ('')
 
 mydb.close()
