@@ -21,10 +21,6 @@ googlemaps = "https://maps.googleapis.com/maps/api/distancematrix/xml?origins="
 
 program_home = '/home/apex/apex-cli/'
 
-collector = 'collector.py'
-
-parsing = 'parsing.py'
-
 system_name = " Apex "
 
 version = "Version 1.0 "
@@ -57,22 +53,22 @@ with open(key) as f:
     f.close
 
 def Logo():
-    num = 10
+    num = 4 
     for _ in range(num):
-        os.system('clear')
-        print(''), print('')
-        print (BOLD + WHITE + system_name+version)
-        print(''), print('')
-        sleep(0.1)
         os.system('clear')
         print(''), print('')
         print (RED + system_name+version)
         print(''), print('')
         sleep(0.1)
+        os.system('clear')
+        print(''), print('')
+        print (BOLD + WHITE + system_name+version)
+        print(''), print('')
+        sleep(0.1)
 Logo()
 
 # MENY
-def m_collector():
+def m_collect():
     datum = input("Datum: ")
     start = input("Startadress: ")
     stopp = input("Stoppadress: ")
@@ -89,10 +85,16 @@ def m_collector():
         f.close
     input('\nPush enter to retun to menu')
 
-def m_parsing():
-    f=open(tempoutput)
-    lines=f.readlines()
-    f.close
+def m_parse():
+    file = pathlib.Path(tempoutput)
+    if file.exists ():
+        f=open(tempoutput)
+        lines=f.readlines()
+        f.close
+    else:
+        print('\n File "' + tempoutput + '" Doesent exist. Run Collect first')
+        return
+
     datum = re.sub(r"[\n\t\s]*", "", (lines[0]))
     start = re.sub(r"[\n\t]*", "", (lines[1]))
     stopp = re.sub(r"[\n\t]*", "", (lines[2]))
@@ -189,8 +191,8 @@ def m_parsing():
     input('\nPush enter to retun to menu')
 
 def show_menu():
-    print ('\n1) Collector')
-    print ('2) Parsing')
+    print ('\n1) Collect')
+    print ('2) Parse')
     print ('Q) Exit\n')
 
 def menu():
@@ -198,9 +200,9 @@ def menu():
         show_menu()
         choice = input('Enter your choice: ').lower()
         if choice == '1':
-            m_collector()
+            m_collect()
         elif choice == '2':
-            m_parsing()
+            m_parse()
         elif choice == 'q':
             file = pathlib.Path(tempoutput)
             if file.exists ():
