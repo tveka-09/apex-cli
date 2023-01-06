@@ -56,14 +56,10 @@ def Logo():
     num = 4 
     for _ in range(num):
         os.system('clear')
-        print(''), print('')
-        print (RED + system_name+version)
-        print(''), print('')
+        print ('\n\n' + RED + system_name+version + '\n\n')
         sleep(0.1)
         os.system('clear')
-        print(''), print('')
-        print (BOLD + WHITE + system_name+version)
-        print(''), print('')
+        print ('\n\n' + BOLD + WHITE + system_name+version)
         sleep(0.1)
 Logo()
 
@@ -197,8 +193,10 @@ def show_menu():
 
 def menu():
     while True:
+        os.system('clear')
         show_menu()
         choice = input('Enter your choice: ').lower()
+        print ('')
         if choice == '1':
             m_collect()
         elif choice == '2':
@@ -214,5 +212,4 @@ def menu():
 
 if __name__ == '__main__':
     menu()
-
 
