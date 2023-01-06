@@ -25,8 +25,6 @@ tempoutput = 'tempoutput.txt'
 
 system_name = " Apex "
 
-version = "Version 1.0 "
-
 mysqlconf = 'mysql.cnf'
 
 mydb = mysql.connector.connect(option_files=protected_home + mysqlconf)
@@ -56,10 +54,10 @@ def Logo():
     num = 4 
     for _ in range(num):
         os.system('clear')
-        print ('\n\n' + RED + system_name+version + '\n\n')
+        print ('\n\n' + RED + system_name + '\n\n')
         sleep(0.1)
         os.system('clear')
-        print ('\n\n' + BOLD + WHITE + system_name+version)
+        print ('\n\n' + BOLD + WHITE + system_name)
         sleep(0.1)
 Logo()
 
