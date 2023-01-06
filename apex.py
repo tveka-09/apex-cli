@@ -108,7 +108,7 @@ def menu():
                 return
             return
         else:
-            print(f'Not a correct choice: <{choice}>,try again')
+            print('\nNot a correct choice, please try again')
 
 if __name__ == '__main__':
     menu()
