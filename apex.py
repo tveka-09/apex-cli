@@ -13,19 +13,19 @@ from collections import Counter
 import pathlib
 import datetime
 
-key = '/home/apex/protected/key.txt'
-
-tempoutput = '/home/apex/apex-cli/tempoutput.txt'
+key = 'key.txt'
 
 googlemaps = "https://maps.googleapis.com/maps/api/distancematrix/xml?origins="
 
 program_home = '/home/apex/apex-cli/'
 
+protected_home = '/home/apex/protected/'
+
+tempoutput = 'tempoutput.txt'
+
 system_name = " Apex "
 
 version = "Version 1.0 "
-
-protected_home = '/home/apex/protected/'
 
 mysqlconf = 'mysql.cnf'
 
@@ -48,7 +48,7 @@ BOLD = '\033[1m'
 UNDERLINE = '\033[4m'
 WHITE =  '\u001b[37m'
 
-with open(key) as f:
+with open(protected_home + key) as f:
     KEY = f.readline()
     f.close
 
@@ -80,19 +80,19 @@ def m_collect():
 
     response = requests.request("GET", url, headers=headers, data=payload)
 
-    with open(tempoutput, 'w') as f:
+    with open(program_home + tempoutput, 'w') as f:
         f.write('' +datum + '\n' +start + '\n' +stopp + '\n' + (str(response.text)) +spec + '\n')
         f.close
     input('\nPush enter to retun to menu')
 
 def m_parse():
-    file = pathlib.Path(tempoutput)
+    file = pathlib.Path(program_home + tempoutput)
     if file.exists ():
         f=open(tempoutput)
         lines=f.readlines()
         f.close
     else:
-        print('\n File "' + tempoutput + '" Doesent exist. Run Collect first')
+        print('\n File "' + program_home + tempoutput + '" Doesent exist. Run Collect first')
         return
 
     datum = re.sub(r"[\n\t\s]*", "", (lines[0]))
@@ -132,7 +132,7 @@ def m_parse():
       print ('Ok, quit.')
       print ('')
       print ('Deleting tempoutput.txt')
-      os.remove(tempoutput)
+      os.remove(program_home + tempoutput)
       print ('')
       sys.exit()
 
@@ -186,7 +186,7 @@ def m_parse():
     print('Sum sek: ', float(sek[0]), 'Kr')
     print ('')
     mydb.close()
-    os.remove(tempoutput)
+    os.remove(program_home + tempoutput)
 
     input('\nPush enter to retun to menu')
 
@@ -204,9 +204,9 @@ def menu():
         elif choice == '2':
             m_parse()
         elif choice == 'q':
-            file = pathlib.Path(tempoutput)
+            file = pathlib.Path(program_home + tempoutput)
             if file.exists ():
-                os.remove(tempoutput)
+                os.remove(program_home + tempoutput)
                 return
             return
         else:
