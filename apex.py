@@ -23,8 +23,6 @@ protected_home = '/home/apex/protected/'
 
 tempoutput = 'tempoutput.txt'
 
-system_name = " Apex "
-
 mysqlconf = 'mysql.cnf'
 
 mydb = mysql.connector.connect(option_files=protected_home + mysqlconf)
@@ -50,18 +48,6 @@ with open(protected_home + key) as f:
     KEY = f.readline()
     f.close
 
-def Logo():
-    num = 4 
-    for _ in range(num):
-        os.system('clear')
-        print ('\n\n' + RED + system_name + '\n\n')
-        sleep(0.1)
-        os.system('clear')
-        print ('\n\n' + BOLD + WHITE + system_name)
-        sleep(0.1)
-Logo()
-
-# MENY
 def m_collect():
     datum = input("Datum: ")
     start = input("Startadress: ")
