@@ -48,11 +48,12 @@ with open(protected_home + key) as f:
     KEY = f.readline()
     f.close
 
-def m_collect():
-    datum = input("Datum: ")
-    start = input("Startadress: ")
-    stopp = input("Stoppadress: ")
-    spec = input("T & R? (Ja / Nej) ")
+# MENY
+def m_collect_and_indatabase():
+    datum = input("Date: ")
+    start = input("Start: ")
+    stopp = input("Stop: ")
+    spec = input("T & R? (Yes / No) ")
     url = ""+googlemaps+""+start+"&destinations="+stopp+"&departure_time=now&key="+KEY+""
 
     payload={}
@@ -63,9 +64,7 @@ def m_collect():
     with open(program_home + tempoutput, 'w') as f:
         f.write('' +datum + '\n' +start + '\n' +stopp + '\n' + (str(response.text)) +spec + '\n')
         f.close
-    input('\nPush enter to retun to menu')
 
-def m_parse():
     file = pathlib.Path(program_home + tempoutput)
     if file.exists ():
         f=open(tempoutput)
@@ -102,6 +101,15 @@ def m_parse():
     print ("")
     print (BOLD +WHITE + 'Skapad: ' +OKCYAN  +skapad +END + '\n' + 'Datum: ' +OKCYAN +datum +END + '\n' +  'Startadress: ' +OKCYAN +start +END + '\n' +  'Stoppadress: ' +OKCYAN +stopp +END + '\n' +  'T&R: ' +OKCYAN +spec +END + '\n' +  'Km: ' +OKCYAN +Ny_Distans +END)
     print ("")
+
+    file = pathlib.Path(program_home + tempoutput)
+    if file.exists ():
+        f=open(tempoutput)
+        lines=f.readlines()
+        f.close
+    else:
+        print('\n File "' + program_home + tempoutput + '" Doesent exist. Run Collect first')
+        return
 
     ychoice = ['yes', 'Yes', 'YES', 'Y', 'y', 'ja', 'Ja', 'JA', 'J', 'j']
     Continue = input('Mata in i databasen? (Ja / Nej) ')
@@ -170,9 +178,12 @@ def m_parse():
 
     input('\nPush enter to retun to menu')
 
+def m_show_result():
+    print ('\n\nResult\n\n')
+
 def show_menu():
-    print ('\n1) Collect')
-    print ('2) Parse')
+    print ('\n1) Collect and insert to database')
+    print ('2) Show result')
     print ('Q) Exit\n')
 
 def menu():
@@ -182,9 +193,9 @@ def menu():
         choice = input('Enter your choice: ').lower()
         print ('')
         if choice == '1':
-            m_collect()
+            m_collect_and_indatabase()
         elif choice == '2':
-            m_parse()
+            m_show_result()
         elif choice == 'q':
             file = pathlib.Path(program_home + tempoutput)
             if file.exists ():
