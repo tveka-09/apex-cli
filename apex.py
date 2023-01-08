@@ -1,11 +1,9 @@
 #!/usr/bin/python3
-########################################
-#                                      #
-#        Berromator Technologies       #
-#        Michael Bellander             #
-#        michael@berro.se              #
-#                                      #
-########################################
+###########################
+# Berromator Technologies #
+#    Michael Bellander    #
+#    michael@berro.se     #
+###########################
 
 import os
 import requests
@@ -52,7 +50,6 @@ with open(protected_home + key) as f:
     KEY = f.readline()
     f.close
 
-# MENY
 def m_collect_and_indatabase():
     datum = input("Date: ")
     start = input("Start: ")
@@ -211,9 +208,6 @@ def m_show_specific_date():
     sek = mycursor.fetchone()
     print('Sum sek: ', float(sek[0]), 'Kr')
     print ('')
-
-
-
 
     input('\nPush enter to retun to menu')
 
