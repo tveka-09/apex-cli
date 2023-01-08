@@ -1,7 +1,11 @@
 #!/usr/bin/python3
-# Apex
-# Berromator Technologies
-# Michael Bellander - michael@berro.se
+########################################
+#                                      #
+#        Berromator Technologies       #
+#        Michael Bellander             #
+#        michael@berro.se              #
+#                                      #
+########################################
 
 import os
 import requests
@@ -187,6 +191,29 @@ def m_show_specific_date():
     result = mycursor.fetchall()
     for b in result:
         print('Skapad:', str(b[0]), ' Datum:', str(b[1]), ' Start:', str(b[2]), ' Stopp:', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
+
+    print('')
+    mycursor = mydb.cursor()
+    kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
+    mycursor.execute(kmsql)
+    km = mycursor.fetchone()
+    print('Total km: ', float(km[0]), 'Km')
+    print('')
+
+    milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
+    mycursor.execute(milsql)
+    mil = mycursor.fetchone()
+    print('Total mil: ', float(mil[0]), 'Mil')
+    print('')
+
+    seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
+    mycursor.execute(seksql)
+    sek = mycursor.fetchone()
+    print('Sum sek: ', float(sek[0]), 'Kr')
+    print ('')
+
+
+
 
     input('\nPush enter to retun to menu')
 
