@@ -179,7 +179,7 @@ def m_show_all_rows():
 def m_show_specific_date():
     print('')
     date1 = input("From (Ex 2022-12-01): ")
-    date2 = input("To (Ex 2022-12-01): ")
+    date2 = input("To   (Ex 2022-12-01): ")
     mycursor = mydb.cursor()
     print('')
     allrowssql = "SELECT * FROM apex.milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"' ORDER BY datum ASC"
