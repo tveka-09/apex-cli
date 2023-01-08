@@ -162,13 +162,12 @@ def m_show_total():
     print('Sum sek: ', float(sek[0]), 'Kr')
     print ('')
 
-
     input('\nPush enter to retun to menu')
 
 def m_show_all_rows():
     mycursor = mydb.cursor()
     print('')
-    allrowssql = "SELECT * FROM apex.milrapport ORDER BY id ASC"
+    allrowssql = "SELECT * FROM apex.milrapport ORDER BY datum ASC"
     mycursor.execute(allrowssql)
     result = mycursor.fetchall()
     for b in result:
@@ -177,10 +176,25 @@ def m_show_all_rows():
 
     input('\nPush enter to retun to menu')
 
+def m_show_specific_date():
+    print('')
+    date1 = input("From (Ex 2022-12-01): ")
+    date2 = input("To (Ex 2022-12-01): ")
+    mycursor = mydb.cursor()
+    print('')
+    allrowssql = "SELECT * FROM apex.milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"' ORDER BY datum ASC"
+    mycursor.execute(allrowssql)
+    result = mycursor.fetchall()
+    for b in result:
+        print('Skapad:', str(b[0]), ' Datum:', str(b[1]), ' Start:', str(b[2]), ' Stopp:', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
+
+    input('\nPush enter to retun to menu')
+
 def show_menu():
     print ('\n1) Collect and insert to database')
     print ('2) Show totals')
     print ('3) Show all rows in database')
+    print ('4) Show rows in database between specific dates')
     print ('Q) Quit\n')
 
 def menu():
@@ -195,6 +209,8 @@ def menu():
             m_show_total()
         elif choice == '3':
             m_show_all_rows()
+        elif choice == '4':
+            m_show_specific_date()
         elif choice == 'q':
             file = pathlib.Path(program_home + tempoutput)
             if file.exists ():
