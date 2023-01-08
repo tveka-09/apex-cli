@@ -115,38 +115,30 @@ def m_collect_and_indatabase():
     Continue = input('Mata in i databasen? (Ja / Nej) ')
     if Continue in ychoice:
       print('')
-    else:
-      print ('')
-      print ('Ok, quit.')
-      print ('')
-      print ('Deleting tempoutput.txt')
-      os.remove(program_home + tempoutput)
-      print ('')
-      sys.exit()
+      mycursor = mydb.cursor()
 
-    mycursor = mydb.cursor()
+      if spec in ychoice:
+        print ('')
+        print ('T&R so we took x2 on km: ' +Ny_Distans + ' when we added it to the database')
+        print ('')
+        sql = "INSERT INTO milrapport (skapad, datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s, %s * 2)"
+      else:
+        sql = "INSERT INTO milrapport (skapad, datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s, %s)"
 
-    if spec in ychoice:
+      val = (skapad, datum, start, stopp, spec, Ny_Distans)
+      mycursor.execute(sql, val)
+      mydb.commit()
       print ('')
-      print ('T&R so we took x2 on km: ' +Ny_Distans + ' when we added it to the database')
+      sql = "SELECT * FROM apex.milrapport ORDER BY id DESC LIMIT 1"
+      mycursor.execute(sql)
+      result = mycursor.fetchone()
+      print('Skapad:', str(result[0]), ' Datum:', str(result[1]), ' Start:', str(result[2]), ' Stopp:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
       print ('')
-      sql = "INSERT INTO milrapport (skapad, datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s, %s * 2)"
-    else:
-      sql = "INSERT INTO milrapport (skapad, datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s, %s)"
-
-    val = (skapad, datum, start, stopp, spec, Ny_Distans)
-    mycursor.execute(sql, val)
-    mydb.commit()
-    print ('')
-    sql = "SELECT * FROM apex.milrapport ORDER BY id DESC LIMIT 1"
-    mycursor.execute(sql)
-    result = mycursor.fetchone()
-    print('Skapad:', str(result[0]), ' Datum:', str(result[1]), ' Start:', str(result[2]), ' Stopp:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
-    print ('')
     
-
-    mydb.close()
-    os.remove(program_home + tempoutput)
+      os.remove(program_home + tempoutput)
+    else:
+      print ('')
+      os.remove(program_home + tempoutput)
 
     input('\nPush enter to retun to menu')
 
