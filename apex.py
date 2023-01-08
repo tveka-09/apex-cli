@@ -125,6 +125,7 @@ def m_collect_and_indatabase():
       sys.exit()
 
     mycursor = mydb.cursor()
+
     if spec in ychoice:
       print ('')
       print ('T&R so we took x2 on km: ' +Ny_Distans + ' when we added it to the database')
@@ -143,19 +144,14 @@ def m_collect_and_indatabase():
     print('Skapad:', str(result[0]), ' Datum:', str(result[1]), ' Start:', str(result[2]), ' Stopp:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
     print ('')
     
-    allrows = input('Vill du se alla rader i databasen? (Ja / Nej) ')
-    if allrows in ychoice:
-      print('')
-      allrowssql = "SELECT * FROM apex.milrapport ORDER BY id ASC"
-      mycursor.execute(allrowssql)
-      result = mycursor.fetchall()
-      for b in result:
-          print('Skapad:', str(b[0]), ' Datum:', str(b[1]), ' Start:', str(b[2]), ' Stopp:', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
 
-      print ('')  
-    else:
-      print ('')
+    mydb.close()
+    os.remove(program_home + tempoutput)
 
+    input('\nPush enter to retun to menu')
+
+def m_show_total():
+    mycursor = mydb.cursor()
     kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM milrapport"
     mycursor.execute(kmsql)
     km = mycursor.fetchone()
@@ -173,18 +169,27 @@ def m_collect_and_indatabase():
     sek = mycursor.fetchone()
     print('Sum sek: ', float(sek[0]), 'Kr')
     print ('')
-    mydb.close()
-    os.remove(program_home + tempoutput)
+
 
     input('\nPush enter to retun to menu')
 
-def m_show_result():
-    print ('\n\nResult\n\n')
+def m_show_all_rows():
+    mycursor = mydb.cursor()
+    print('')
+    allrowssql = "SELECT * FROM apex.milrapport ORDER BY id ASC"
+    mycursor.execute(allrowssql)
+    result = mycursor.fetchall()
+    for b in result:
+        print('Skapad:', str(b[0]), ' Datum:', str(b[1]), ' Start:', str(b[2]), ' Stopp:', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
+    print ('')  
+
+    input('\nPush enter to retun to menu')
 
 def show_menu():
     print ('\n1) Collect and insert to database')
-    print ('2) Show result')
-    print ('Q) Exit\n')
+    print ('2) Show totals')
+    print ('3) Show all rows in database')
+    print ('Q) Quit\n')
 
 def menu():
     while True:
@@ -195,12 +200,16 @@ def menu():
         if choice == '1':
             m_collect_and_indatabase()
         elif choice == '2':
-            m_show_result()
+            m_show_total()
+        elif choice == '3':
+            m_show_all_rows()
         elif choice == 'q':
             file = pathlib.Path(program_home + tempoutput)
             if file.exists ():
                 os.remove(program_home + tempoutput)
+                mydb.close()
                 return
+            mydb.close()
             return
         else:
             print('\nNot a correct choice, please try again')
