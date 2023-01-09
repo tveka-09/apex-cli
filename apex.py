@@ -14,6 +14,9 @@ from time import sleep
 from collections import Counter
 import pathlib
 import datetime
+import csv
+import pandas as ps
+import argparse
 
 key = 'key.txt'
 
@@ -26,6 +29,8 @@ protected_home = '/home/apex/protected/'
 tempoutput = 'tempoutput.txt'
 
 mysqlconf = 'mysql.cnf'
+
+milrapport = 'milrapport.csv'
 
 mydb = mysql.connector.connect(option_files=protected_home + mysqlconf)
 
@@ -51,6 +56,7 @@ with open(protected_home + key) as f:
     f.close
 
 def m_collect_and_indatabase():
+    mycursor = mydb.cursor()
     datum = input("Date: ")
     start = input("Start: ")
     stopp = input("Stop: ")
@@ -95,12 +101,11 @@ def m_collect_and_indatabase():
 
     result = (datum, start, stopp, Ny_Distans, spec + '\n')
     time = datetime.datetime.now()
-    skapad = time.strftime("%c")
 
     print ("")
     print (BOLD +WHITE + 'Status: ' +GREEN  +Ny_Status +END)
     print ("")
-    print (BOLD +WHITE + 'Skapad: ' +OKCYAN  +skapad +END + '\n' + 'Datum: ' +OKCYAN +datum +END + '\n' +  'Startadress: ' +OKCYAN +start +END + '\n' +  'Stoppadress: ' +OKCYAN +stopp +END + '\n' +  'T&R: ' +OKCYAN +spec +END + '\n' +  'Km: ' +OKCYAN +Ny_Distans +END)
+    print (BOLD +WHITE + 'Datum: ' +OKCYAN +datum +END + '\n' +  'Startadress: ' +OKCYAN +start +END + '\n' +  'Stoppadress: ' +OKCYAN +stopp +END + '\n' +  'T&R: ' +OKCYAN +spec +END + '\n' +  'Km: ' +OKCYAN +Ny_Distans +END)
     print ("")
 
     file = pathlib.Path(program_home + tempoutput)
@@ -115,32 +120,26 @@ def m_collect_and_indatabase():
     ychoice = ['yes', 'Yes', 'YES', 'Y', 'y', 'ja', 'Ja', 'JA', 'J', 'j']
     Continue = input('Mata in i databasen? (Ja / Nej) ')
     if Continue in ychoice:
-      print('')
-      mycursor = mydb.cursor()
+        print('')
 
-      if spec in ychoice:
-        print ('')
-        print ('T&R so we took x2 on km: ' +Ny_Distans + ' when we added it to the database')
-        print ('')
-        sql = "INSERT INTO milrapport (skapad, datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s, %s * 2)"
-      else:
-        sql = "INSERT INTO milrapport (skapad, datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s, %s)"
+        if spec in ychoice:
+            print ('')
+            print ('T&R so we took x2 on km: ' +Ny_Distans + ' when we added it to the database')
+            print ('')
+            sql = "INSERT INTO milrapport (datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s * 2)"
+        else:
+            sql = "INSERT INTO milrapport (datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s)"
 
-      val = (skapad, datum, start, stopp, spec, Ny_Distans)
-      mycursor.execute(sql, val)
-      mydb.commit()
-      print ('')
-      sql = "SELECT * FROM apex.milrapport ORDER BY id DESC LIMIT 1"
-      mycursor.execute(sql)
-      result = mycursor.fetchone()
-      print('Skapad:', str(result[0]), ' Datum:', str(result[1]), ' Start:', str(result[2]), ' Stopp:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
-      print ('')
+    val = (datum, start, stopp, spec, Ny_Distans)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    print ('')
+    sql = "SELECT * FROM apex.milrapport ORDER BY id DESC LIMIT 1"
+    mycursor.execute(sql)
+    result = mycursor.fetchone()
+    print('Datum:', str(result[1]), ' Start:', str(result[2]), ' Stopp:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
+    print ('')
     
-      os.remove(program_home + tempoutput)
-    else:
-      print ('')
-      os.remove(program_home + tempoutput)
-
     input('\nPush enter to retun to menu')
 
 def m_show_total():
@@ -172,7 +171,7 @@ def m_show_all_rows():
     mycursor.execute(allrowssql)
     result = mycursor.fetchall()
     for b in result:
-        print('Skapad:', str(b[0]), ' Datum:', str(b[1]), ' Start:', str(b[2]), ' Stopp:', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
+        print('Datum:', str(b[1]), ' Start:', str(b[2]), ' Stopp:', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
     print ('')  
 
     input('\nPush enter to retun to menu')
@@ -187,7 +186,7 @@ def m_show_specific_date():
     mycursor.execute(allrowssql)
     result = mycursor.fetchall()
     for b in result:
-        print('Skapad:', str(b[0]), ' Datum:', str(b[1]), ' Start:', str(b[2]), ' Stopp:', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
+        print('Datum: ', str(b[1]), ' Start: ', str(b[2]), ' Stopp: ', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
 
     print('')
     mycursor = mydb.cursor()
@@ -211,11 +210,28 @@ def m_show_specific_date():
 
     input('\nPush enter to retun to menu')
 
+def m_import_csv():
+    mycursor = mydb.cursor()
+    #cursor = mydb.cursor()
+
+    with open(protected_home + milrapport) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            mycursor.execute("""INSERT INTO milrapport (datum, startadress, stoppadress, km, t_o_r)
+                          VALUES(%s, %s, %s, %s, %s)
+                       """, row)
+
+    mydb.commit()
+    print ('Done')
+
+    input('\nPush enter to retun to menu')
+
 def show_menu():
     print ('\n1) Collect and insert to database')
     print ('2) Show totals')
     print ('3) Show all rows in database')
     print ('4) Show rows in database between specific dates')
+    print ('5) Import into database from csv file')
     print ('Q) Quit\n')
 
 def menu():
@@ -232,6 +248,8 @@ def menu():
             m_show_all_rows()
         elif choice == '4':
             m_show_specific_date()
+        elif choice == '5':
+            m_import_csv()
         elif choice == 'q':
             file = pathlib.Path(program_home + tempoutput)
             if file.exists ():
