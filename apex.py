@@ -200,13 +200,14 @@ def m_import_csv():
     input('\nPush enter to retun to menu')
 
 def show_menu():
-    print (bggreenpal3 + '                                                  ')
-    print (bggreenpal5 + ' 1) Collect and insert to database                ')
-    print (bggreenpal7 + ' 2) Show totals                                   ')
-    print (bggreenpal9 + ' 3) Show all rows in database                     ')
-    print (bggreenpal11 + ' 4) Show rows in database between specific dates  ')
-    print (bggreenpal12 + ' 5) Import into database from csv file            ')
-    print (bggreenpal13 + ' Q) Quit                                          ')
+    print (bggreenpal2 + '')
+    print (' ' + bggreenpal3 + '                                                  ' + bggreenpal2 + ' ')
+    print (bggreenpal3 + ' '  + bggreenpal5 + ' 1) Collect and insert to database                ' + bggreenpal3 + ' ')
+    print (bggreenpal5 + ' ' + bggreenpal7 + ' 2) Show totals                                   ' + bggreenpal5 + ' ')
+    print (bggreenpal7 + ' ' + bggreenpal9 + ' 3) Show all rows in database                     ' + bggreenpal7 + ' ')
+    print (bggreenpal9 + ' ' + bggreenpal11 + ' 4) Show rows in database between specific dates  ' + bggreenpal9 + ' ')
+    print (bggreenpal11 + ' ' + bggreenpal12 + ' 5) Import into database from csv file            ' + bggreenpal11 + ' ')
+    print (bggreenpal12 + ' ' + bggreenpal13 + ' Q) Quit                                          ' + bggreenpal12 + ' ')
 
 def menu():
     while True:
