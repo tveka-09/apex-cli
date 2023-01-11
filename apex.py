@@ -202,18 +202,18 @@ def m_import_csv():
 def show_menu():
     print (bggreenpal2 + '')
     print (' ' + bggreenpal3 + '                                                  ' + bggreenpal2 + ' ')
-    print (bggreenpal3 + ' '  + bggreenpal5 + ' 1) Collect and insert to database                ' + bggreenpal3 + ' ')
+    print (bggreenpal3 + ' '  + bggreenpal5 + ' 1) Collect and insert to database                ' + res + bggreenpal3 + ' ')
     print (bggreenpal5 + ' ' + bggreenpal7 + ' 2) Show totals                                   ' + bggreenpal5 + ' ')
     print (bggreenpal7 + ' ' + bggreenpal9 + ' 3) Show all rows in database                     ' + bggreenpal7 + ' ')
     print (bggreenpal9 + ' ' + bggreenpal11 + ' 4) Show rows in database between specific dates  ' + bggreenpal9 + ' ')
     print (bggreenpal11 + ' ' + bggreenpal12 + ' 5) Import into database from csv file            ' + bggreenpal11 + ' ')
-    print (bggreenpal12 + ' ' + bggreenpal13 + ' Q) Quit                                          ' + bggreenpal12 + ' ')
+    print (bggreenpal13 + ' ' + bggreenpal13 + ' Q) Quit                                          ' + bggreenpal12 + ' ')
 
 def menu():
     while True:
         os.system('clear')
         show_menu()
-        choice = input(res + 'Enter your choice:                                \n').lower()
+        choice = input(bggreenpal13 + ' ' + res + fggreenpal3 + '  Enter your choice:                              ' + bggreenpal13 + ' \n' + res + fggreenpal3).lower()
         print (res)
         if choice == '1':
             m_collect_and_indatabase()
