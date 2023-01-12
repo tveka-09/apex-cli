@@ -33,11 +33,12 @@ with open(protected_home + key) as f:
     f.close
 
 def m_collect_and_indatabase():
+    os.system('clear')
     mycursor = mydb.cursor()
-    datum = input(cornflowerblue + "Date: " + lightskyblue)
-    start = input(cornflowerblue + "Start: "+ lightskyblue)
-    stopp = input(cornflowerblue + "Stop: "+ lightskyblue)
-    spec = input(cornflowerblue + "T & R? (Yes / No) "+ lightskyblue)
+    datum = input(hue1 + "Date: ")
+    start = input(hue2 + "Start: ")
+    stopp = input(hue3 + "Stop: ")
+    spec = input(hue4 + "T & R? (Yes / No) ")
     url = ""+googlemaps+""+start+"&destinations="+stopp+"&departure_time=now&key="+KEY+""
 
     payload={}
@@ -79,10 +80,8 @@ def m_collect_and_indatabase():
     result = (datum, start, stopp, Ny_Distans, spec + '\n')
     time = datetime.datetime.now()
 
-    print ('')
-    print (pinkp1 + 'Status: ' + Ny_Status)
-    print (pinkp2 + 'Datum: ' + datum + pinkp3 + '\n' +  'Startadress: ' + start + pinkp4 + '\n' +  'Stoppadress: ' + stopp + pinkp5 + '\n' +  'T&R: ' + spec +  '\n' +  'Km: '  + Ny_Distans + res)
-    print ('')
+    print (hue5 + 'Status: ' + Ny_Status)
+    print (hue6 + 'Datum: ' + datum + '\n' + hue7 + 'Startadress: ' + start + '\n' + hue8 + 'Stoppadress: ' + stopp + '\n' + hue9 + 'T&R: ' + spec +  '\n' + hue10 + 'Km: ' + Ny_Distans + res)
 
     file = pathlib.Path(program_home + tempoutput)
     if file.exists ():
@@ -94,14 +93,11 @@ def m_collect_and_indatabase():
         return
 
     ychoice = ['yes', 'Yes', 'YES', 'Y', 'y', 'ja', 'Ja', 'JA', 'J', 'j']
-    Continue = input(darkseagreen1 + 'Import into the database? (y / n) ' + res)
+    Continue = input(hue11 + 'Import into the database? (y / n) ')
     if Continue in ychoice:
-        print('')
 
         if spec in ychoice:
-            print ('')
-            print (cornflowerblue + 'T&R so we took x2 on km: ' + lightskyblue + Ny_Distans + cornflowerblue + ' when we added it to the database')
-            print ('')
+            print (hue12 + 'T&R so we took x2 on km: ' + Ny_Distans + ' when we added it to the database')
             sql = "INSERT INTO milrapport (datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s * 2)"
         else:
             sql = "INSERT INTO milrapport (datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s)"
@@ -109,16 +105,16 @@ def m_collect_and_indatabase():
     val = (datum, start, stopp, spec, Ny_Distans)
     mycursor.execute(sql, val)
     mydb.commit()
-    print ('')
     sql = "SELECT * FROM apex.milrapport ORDER BY id DESC LIMIT 1"
     mycursor.execute(sql)
     result = mycursor.fetchone()
-    print(cornflowerblue + 'Date:' + lightskyblue, str(result[1]), cornflowerblue + ' Start:' + lightskyblue, str(result[2]), cornflowerblue + ' Stop:' + lightskyblue, str(result[3]), cornflowerblue + ' T&R:' + lightskyblue, str(result[4]), cornflowerblue + ' Km:' + lightskyblue, str(result[5]), cornflowerblue + ' Id:' + lightskyblue, str(result[6]))
+    print(hue13 + 'Date:', str(result[1]), ' Start:', str(result[2]), ' Stop:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
     print (res)
     
-    input(darkseagreen1 + '\nPush enter to retun to menu' + res)
+    input(hue14 + '\nPush enter to retun to menu' + res)
 
 def m_show_total():
+    os.system('clear')
     mycursor = mydb.cursor()
     kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM milrapport"
     mycursor.execute(kmsql)
@@ -138,30 +134,28 @@ def m_show_total():
     input(pinkp5 + '\nPush enter to retun to menu' + res)
 
 def m_show_all_rows():
+    os.system('clear')
     mycursor = mydb.cursor()
-    print('')
     allrowssql = "SELECT * FROM apex.milrapport ORDER BY datum ASC"
     mycursor.execute(allrowssql)
     result = mycursor.fetchall()
     for b in result:
-        print('Date:', str(b[1]), ' Start:', str(b[2]), ' Stop:', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
+        print(hue1 + 'Date:' + hue2, str(b[1]), ' Start:' + hue3, str(b[2]), ' Stop:' + hue4, str(b[3]), ' T&R:' + hue5, str(b[4]), ' Km:' + hue6, str(b[5]), ' Id:' + hue7, str(b[6]))
     print ('')  
 
-    input(darkseagreen1 + '\nPush enter to retun to menu' + res)
+    input(hue1 + '\nPush enter to retun to menu' + res)
 
 def m_show_specific_date():
-    print('')
+    os.system('clear')
     date1 = input("From (Ex 2022-12-01): ")
     date2 = input("To   (Ex 2022-12-01): ")
     mycursor = mydb.cursor()
-    print('')
     allrowssql = "SELECT * FROM apex.milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"' ORDER BY datum ASC"
     mycursor.execute(allrowssql)
     result = mycursor.fetchall()
     for b in result:
         print('Date: ', str(b[1]), ' Start: ', str(b[2]), ' Stop: ', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
 
-    print('')
     mycursor = mydb.cursor()
     kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
     mycursor.execute(kmsql)
@@ -184,6 +178,7 @@ def m_show_specific_date():
     input('\nPush enter to retun to menu')
 
 def m_import_csv():
+    os.system('clear')
     mycursor = mydb.cursor()
     #cursor = mydb.cursor()
 
