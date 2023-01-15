@@ -34,11 +34,12 @@ with open(protected_home + key) as f:
 
 def m_collect_and_indatabase():
     os.system('clear')
+    print ('')
     mycursor = mydb.cursor()
-    datum = input(hue1 + "Date: ")
-    start = input(hue2 + "Start: ")
-    stopp = input(hue3 + "Stop: ")
-    spec = input(hue4 + "T & R? (Yes / No) ")
+    datum = input(hue1 + " Date: ")
+    start = input(hue2 + " Start: ")
+    stopp = input(hue3 + " Stop: ")
+    spec = input(hue4 + " T & R? (y / n) ")
     url = ""+googlemaps+""+start+"&destinations="+stopp+"&departure_time=now&key="+KEY+""
 
     payload={}
@@ -56,7 +57,7 @@ def m_collect_and_indatabase():
         lines=f.readlines()
         f.close
     else:
-        print('\n File "' + program_home + tempoutput + '" Doesent exist. Run Collect first')
+        print(hue5 + '\n File "' + program_home + tempoutput + '" Doesent exist. Run Collect first')
         return
 
     datum = re.sub(r"[\n\t\s]*", "", (lines[0]))
@@ -80,8 +81,8 @@ def m_collect_and_indatabase():
     result = (datum, start, stopp, Ny_Distans, spec + '\n')
     time = datetime.datetime.now()
 
-    print (hue5 + 'Status: ' + Ny_Status)
-    print (hue6 + 'Datum: ' + datum + '\n' + hue7 + 'Startadress: ' + start + '\n' + hue8 + 'Stoppadress: ' + stopp + '\n' + hue9 + 'T&R: ' + spec +  '\n' + hue10 + 'Km: ' + Ny_Distans + res)
+    print (hue5 + ' Status: ' + Ny_Status)
+    print (hue6 + ' Datum: ' + datum + '\n' + hue7 + ' Start: ' + start + '\n' + hue8 + ' Stop: ' + stopp + '\n' + hue9 + ' T&R: ' + spec +  '\n' + hue10 + ' Km: ' + Ny_Distans + res)
 
     file = pathlib.Path(program_home + tempoutput)
     if file.exists ():
@@ -89,52 +90,55 @@ def m_collect_and_indatabase():
         lines=f.readlines()
         f.close
     else:
-        print('\n File "' + program_home + tempoutput + '" Doesent exist. Run Collect first')
+        print(hue7 + '\n File "' + program_home + tempoutput + '" Doesent exist. Run Collect first')
         return
 
     ychoice = ['yes', 'Yes', 'YES', 'Y', 'y', 'ja', 'Ja', 'JA', 'J', 'j']
-    Continue = input(hue11 + 'Import into the database? (y / n) ')
+    Continue = input(hue11 + ' Import into the database? (y / n) ')
     if Continue in ychoice:
 
         if spec in ychoice:
-            print (hue12 + 'T&R so we took x2 on km: ' + Ny_Distans + ' when we added it to the database')
+            print (hue12 + ' T&R so we took x2 on km: ' + Ny_Distans + ' when we added it to the database')
             sql = "INSERT INTO milrapport (datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s * 2)"
         else:
             sql = "INSERT INTO milrapport (datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s)"
 
-    val = (datum, start, stopp, spec, Ny_Distans)
-    mycursor.execute(sql, val)
-    mydb.commit()
-    sql = "SELECT * FROM apex.milrapport ORDER BY id DESC LIMIT 1"
-    mycursor.execute(sql)
-    result = mycursor.fetchone()
-    print(hue13 + 'Date:', str(result[1]), ' Start:', str(result[2]), ' Stop:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
-    print (res)
+        val = (datum, start, stopp, spec, Ny_Distans)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        sql = "SELECT * FROM apex.milrapport ORDER BY id DESC LIMIT 1"
+        mycursor.execute(sql)
+        result = mycursor.fetchone()
+        print ('')
+        print(hue13 + ' Date:', str(result[1]), ' Start:', str(result[2]), ' Stop:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
+
+    else:
+        print (' No database insert')
     
-    input(hue14 + '\nPush enter to retun to menu' + res)
+    input(hue14 + '\n Push enter to retun to menu' + res)
 
 def m_show_total():
-    os.system('clear')
     mycursor = mydb.cursor()
     kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM milrapport"
     mycursor.execute(kmsql)
     km = mycursor.fetchone()
-    print(pinkp2 + 'Total: ' + pinkp2, float(km[0]), pinkp2 + 'Km')
+    print(hue7 + ' Total: ', float(km[0]), 'Km')
 
     milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM milrapport"
     mycursor.execute(milsql)
     mil = mycursor.fetchone()
-    print(pinkp3 + 'Total: ' + pinkp3, float(mil[0]), pinkp3 + 'Mil')
+    print(hue8 + ' Total: ', float(mil[0]), 'Mil')
 
     seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM milrapport"
     mycursor.execute(seksql)
     sek = mycursor.fetchone()
-    print(pinkp4 + 'Total: ' + pinkp4, float(sek[0]), pinkp4 + 'Sek')
+    print(hue9 + ' Total: ', float(sek[0]), 'Sek')
 
-    input(pinkp5 + '\nPush enter to retun to menu' + res)
+    input(hue10 + '\n Push enter to retun to menu')
 
 def m_show_all_rows():
     os.system('clear')
+    print ('')
     mycursor = mydb.cursor()
     allrowssql = "SELECT * FROM apex.milrapport ORDER BY datum ASC"
     mycursor.execute(allrowssql)
@@ -147,40 +151,40 @@ def m_show_all_rows():
 
 def m_show_specific_date():
     os.system('clear')
-    date1 = input("From (Ex 2022-12-01): ")
-    date2 = input("To   (Ex 2022-12-01): ")
+    print ('')
+    date1 = input(hue1 + " From (Ex 2022-12-01): ")
+    date2 = input(hue2 + " To   (Ex 2022-12-01): ")
+    print ('')
     mycursor = mydb.cursor()
     allrowssql = "SELECT * FROM apex.milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"' ORDER BY datum ASC"
     mycursor.execute(allrowssql)
     result = mycursor.fetchall()
     for b in result:
-        print('Date: ', str(b[1]), ' Start: ', str(b[2]), ' Stop: ', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
+        print(hue3 + ' Date: ', str(b[1]), ' Start: ', str(b[2]), ' Stop: ', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
 
+    print ('')
     mycursor = mydb.cursor()
     kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
     mycursor.execute(kmsql)
     km = mycursor.fetchone()
-    print('Total km: ', float(km[0]), 'Km')
-    print('')
+    print(hue4 + ' Total km: ', float(km[0]), 'Km')
 
     milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
     mycursor.execute(milsql)
     mil = mycursor.fetchone()
-    print('Total mil: ', float(mil[0]), 'Mil')
-    print('')
+    print(hue5 + ' Total mil: ', float(mil[0]), 'Mil')
 
     seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
     mycursor.execute(seksql)
     sek = mycursor.fetchone()
-    print('Sum sek: ', float(sek[0]), 'Kr')
-    print ('')
+    print(hue6 + ' Sum sek: ', float(sek[0]), 'Kr')
 
-    input('\nPush enter to retun to menu')
+    input(hue7 + '\n Push enter to retun to menu')
 
 def m_import_csv():
     os.system('clear')
+    print ('')
     mycursor = mydb.cursor()
-    #cursor = mydb.cursor()
 
     with open(protected_home + milrapport) as f:
         reader = csv.reader(f)
@@ -190,25 +194,24 @@ def m_import_csv():
                        """, row)
 
     mydb.commit()
-    print ('Done')
+    print (hue14 + 'Done')
 
-    input('\nPush enter to retun to menu')
+    input(hue15 + '\nPush enter to retun to menu')
 
 def show_menu():
-    print (bggreenpal2 + '')
-    print (' ' + bggreenpal3 + '                                                  ' + bggreenpal2 + ' ')
-    print (bggreenpal3 + ' '  + bggreenpal5 + ' 1) Collect and insert to database                ' + res + bggreenpal3 + ' ')
-    print (bggreenpal5 + ' ' + bggreenpal7 + ' 2) Show totals                                   ' + bggreenpal5 + ' ')
-    print (bggreenpal7 + ' ' + bggreenpal9 + ' 3) Show all rows in database                     ' + bggreenpal7 + ' ')
-    print (bggreenpal9 + ' ' + bggreenpal11 + ' 4) Show rows in database between specific dates  ' + bggreenpal9 + ' ')
-    print (bggreenpal11 + ' ' + bggreenpal12 + ' 5) Import into database from csv file            ' + bggreenpal11 + ' ')
-    print (bggreenpal13 + ' ' + bggreenpal13 + ' Q) Quit                                          ' + bggreenpal12 + ' ')
+    print ('')
+    print (hue1 + ' 1) Collect and insert to database                ')
+    print (hue2 + ' 2) Show totals                                   ')
+    print (hue3 + ' 3) Show all rows in database                     ')
+    print (hue4 + ' 4) Show rows in database between specific dates  ')
+    print (hue5 + ' 5) Import into database from csv file            ')
+    print (hue6 + ' Q) Quit                                          ')
 
 def menu():
     while True:
         os.system('clear')
         show_menu()
-        choice = input(bggreenpal13 + ' ' + res + fggreenpal3 + '  Enter your choice:                              ' + bggreenpal13 + ' \n' + res + fggreenpal3).lower()
+        choice = input(hue6 + ' Enter your choice: ').lower()
         print (res)
         if choice == '1':
             m_collect_and_indatabase()
