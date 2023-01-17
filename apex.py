@@ -25,7 +25,7 @@ program_home = '/home/apex/apex-cli/'
 protected_home = '/home/apex/protected/'
 tempoutput = 'tempoutput.txt'
 mysqlconf = 'mysql.cnf'
-milrapport = 'milrapport.csv'
+reportfile = 'report.csv'
 mydb = mysql.connector.connect(option_files=protected_home + mysqlconf)
 
 with open(protected_home + key) as f:
@@ -99,14 +99,14 @@ def m_collect_and_indatabase():
 
         if spec in ychoice:
             print (hue12 + ' T&R so we took x2 on km: ' + Ny_Distans + ' when we added it to the database')
-            sql = "INSERT INTO milrapport (datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s * 2)"
+            sql = "INSERT INTO report (datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s * 2)"
         else:
-            sql = "INSERT INTO milrapport (datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s)"
+            sql = "INSERT INTO report (datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s)"
 
         val = (datum, start, stopp, spec, Ny_Distans)
         mycursor.execute(sql, val)
         mydb.commit()
-        sql = "SELECT * FROM apex.milrapport ORDER BY id DESC LIMIT 1"
+        sql = "SELECT * FROM apex.report ORDER BY id DESC LIMIT 1"
         mycursor.execute(sql)
         result = mycursor.fetchone()
         print ('')
@@ -119,17 +119,17 @@ def m_collect_and_indatabase():
 
 def m_show_total():
     mycursor = mydb.cursor()
-    kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM milrapport"
+    kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report"
     mycursor.execute(kmsql)
     km = mycursor.fetchone()
     print(hue7 + ' Total: ', float(km[0]), 'Km')
 
-    milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM milrapport"
+    milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report"
     mycursor.execute(milsql)
     mil = mycursor.fetchone()
     print(hue8 + ' Total: ', float(mil[0]), 'Mil')
 
-    seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM milrapport"
+    seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM report"
     mycursor.execute(seksql)
     sek = mycursor.fetchone()
     print(hue9 + ' Total: ', float(sek[0]), 'Sek')
@@ -140,7 +140,7 @@ def m_show_all_rows():
     os.system('clear')
     print ('')
     mycursor = mydb.cursor()
-    allrowssql = "SELECT * FROM apex.milrapport ORDER BY datum ASC"
+    allrowssql = "SELECT * FROM apex.report ORDER BY datum ASC"
     mycursor.execute(allrowssql)
     result = mycursor.fetchall()
     for b in result:
@@ -156,7 +156,7 @@ def m_show_specific_date():
     date2 = input(hue2 + " To   (Ex 2022-12-01): ")
     print ('')
     mycursor = mydb.cursor()
-    allrowssql = "SELECT * FROM apex.milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"' ORDER BY datum ASC"
+    allrowssql = "SELECT * FROM apex.report WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"' ORDER BY datum ASC"
     mycursor.execute(allrowssql)
     result = mycursor.fetchall()
     for b in result:
@@ -164,17 +164,17 @@ def m_show_specific_date():
 
     print ('')
     mycursor = mydb.cursor()
-    kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
+    kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
     mycursor.execute(kmsql)
     km = mycursor.fetchone()
     print(hue4 + ' Total km: ', float(km[0]), 'Km')
 
-    milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
+    milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
     mycursor.execute(milsql)
     mil = mycursor.fetchone()
     print(hue5 + ' Total mil: ', float(mil[0]), 'Mil')
 
-    seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM milrapport WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
+    seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM report WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
     mycursor.execute(seksql)
     sek = mycursor.fetchone()
     print(hue6 + ' Sum sek: ', float(sek[0]), 'Kr')
@@ -183,19 +183,18 @@ def m_show_specific_date():
 
 def m_import_csv():
     os.system('clear')
-    print ('')
+    print (hue1 + '\n Below rows read from file: "' + protected_home + reportfile + '" and imported into the database:\n')
     mycursor = mydb.cursor()
 
-    with open(protected_home + milrapport) as f:
+    with open(protected_home + reportfile) as f:
         reader = csv.reader(f)
         for row in reader:
-            mycursor.execute("""INSERT INTO milrapport (datum, startadress, stoppadress, km, t_o_r)
+            mycursor.execute("""INSERT INTO tempimport (tempdate, tempstart, tempstop, tempkm, temptr)
                           VALUES(%s, %s, %s, %s, %s)
-                       """, row)
+                       """, row), print(hue1 + 'Date:' + hue2, str(row[0]), ' Start:' + hue3, str(row[1]), ' Stop:' + hue4, str(row[2]), ' Km:' + hue6, str(row[3]), ' T&R:' + hue5, str(row[4]))
 
     mydb.commit()
-    print (hue14 + 'Done')
-
+    print ('')
     input(hue15 + '\nPush enter to retun to menu')
 
 def show_menu():
