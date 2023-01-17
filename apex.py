@@ -144,10 +144,10 @@ def m_show_all_rows():
     mycursor.execute(allrowssql)
     result = mycursor.fetchall()
     for b in result:
-        print(hue1 + 'Date:' + hue2, str(b[1]), ' Start:' + hue3, str(b[2]), ' Stop:' + hue4, str(b[3]), ' T&R:' + hue5, str(b[4]), ' Km:' + hue6, str(b[5]), ' Id:' + hue7, str(b[6]))
+        print(hue1 + ' Date:' + hue2, str(b[1]), ' Start:' + hue3, str(b[2]), ' Stop:' + hue4, str(b[3]), ' T&R:' + hue5, str(b[4]), ' Km:' + hue6, str(b[5]), ' Id:' + hue7, str(b[6]))
     print ('')  
 
-    input(hue1 + '\nPush enter to retun to menu' + res)
+    input(hue1 + '\n Push enter to retun to menu' + res)
 
 def m_show_specific_date():
     os.system('clear')
@@ -235,3 +235,4 @@ def menu():
 
 if __name__ == '__main__':
     menu()
+
