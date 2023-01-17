@@ -191,11 +191,11 @@ def m_import_csv():
         for row in reader:
             mycursor.execute("""INSERT INTO tempimport (tempdate, tempstart, tempstop, tempkm, temptr)
                           VALUES(%s, %s, %s, %s, %s)
-                       """, row), print(hue1 + 'Date:' + hue2, str(row[0]), ' Start:' + hue3, str(row[1]), ' Stop:' + hue4, str(row[2]), ' Km:' + hue6, str(row[3]), ' T&R:' + hue5, str(row[4]))
+                       """, row), print(hue1 + ' Date:' + hue2, str(row[0]), '\t' +  'Start:' + hue3, str(row[1]), '\t\t' + 'Stop:' + hue4, str(row[2]), '\t' + 'Km:' + hue6, str(row[3]), '\t' + 'T&R:' + hue5, str(row[4]))
 
     mydb.commit()
     print ('')
-    input(hue15 + '\nPush enter to retun to menu')
+    input(hue5 + '\n Push enter to retun to menu')
 
 def show_menu():
     print ('')
@@ -235,4 +235,3 @@ def menu():
 
 if __name__ == '__main__':
     menu()
-
