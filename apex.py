@@ -24,6 +24,7 @@ googlemaps = "https://maps.googleapis.com/maps/api/distancematrix/xml?origins="
 program_home = '/home/apex/apex-cli/'
 protected_home = '/home/apex/protected/'
 tempoutput = 'tempoutput.txt'
+tempimport = 'tempimport.txt'
 mysqlconf = 'mysql.cnf'
 reportfile = 'report.csv'
 mydb = mysql.connector.connect(option_files=protected_home + mysqlconf)
@@ -194,7 +195,29 @@ def m_import_csv():
                        """, row), print(hue1 + ' Date:' + hue2, str(row[0]), '\t' +  'Start:' + hue3, str(row[1]), '\t\t' + 'Stop:' + hue4, str(row[2]), '\t' + 'Km:' + hue6, str(row[3]), '\t' + 'T&R:' + hue5, str(row[4]))
 
     mydb.commit()
-    print ('')
+    input(hue5 + '\n Push enter to retun to menu')
+
+def m_tempdb_to_realdb():
+    os.system('clear')
+    print (hue1 + '\n Tempdb -> RealDB\n')
+    mycursor = mydb.cursor()
+    allrowssql = "SELECT * FROM apex.tempimport ORDER BY tempdate ASC"
+    mycursor.execute(allrowssql)
+    result = mycursor.fetchall()
+    for b in result:
+        date = str(b[1])
+        start = str(b[2])
+        stop = str(b[3])
+        tr = str(b[4])
+        km = str(b[5])
+        id = str(b[6])
+        url = ""+googlemaps+""+start+"&destinations="+stop+"&departure_time=now&key="+KEY+""
+        payload={}
+        headers = {}
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        print('' + date + '\n' + start + '\n' +stop + '\n' + tr + '\n' + (str(response.text)))
+
     input(hue5 + '\n Push enter to retun to menu')
 
 def show_menu():
@@ -204,7 +227,8 @@ def show_menu():
     print (hue3 + ' 3) Show all rows in database                     ')
     print (hue4 + ' 4) Show rows in database between specific dates  ')
     print (hue5 + ' 5) Import into database from csv file            ')
-    print (hue6 + ' Q) Quit                                          ')
+    print (hue6 + ' 6) Tempdb to Realdb                              ')
+    print (hue7 + ' Q) Quit                                          ')
 
 def menu():
     while True:
@@ -222,6 +246,8 @@ def menu():
             m_show_specific_date()
         elif choice == '5':
             m_import_csv()
+        elif choice == '6':
+            m_tempdb_to_realdb()
         elif choice == 'q':
             file = pathlib.Path(program_home + tempoutput)
             if file.exists ():
