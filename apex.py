@@ -33,9 +33,8 @@ with open(protected_home + key) as f:
 
 def m_collect_and_indatabase():
     os.system('clear')
-    print ('')
     mycursor = mydb.cursor()
-    date = input(hue1 + " Date: ")
+    date = input(hue1 + "\n Date: ")
     start = input(hue2 + " Start: ")
     stop = input(hue3 + " Stop: ")
     t_o_r = input(hue4 + " T & R? (y / n) ")
@@ -75,11 +74,12 @@ def m_collect_and_indatabase():
     input(hue14 + '\n Push enter to retun to menu')
 
 def m_show_total():
+    os.system('clear')
     mycursor = mydb.cursor()
     kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report"
     mycursor.execute(kmsql)
     km = mycursor.fetchone()
-    print(hue7 + ' Total: ', float(km[0]), 'Km')
+    print(hue7 + '\n Total: ', float(km[0]), 'Km')
 
     milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report"
     mycursor.execute(milsql)
@@ -102,14 +102,12 @@ def m_show_all_rows():
     result = mycursor.fetchall()
     for b in result:
         print(hue1 + ' Date:' + hue2, str(b[1]), ' Start:' + hue3, str(b[2]), ' Stop:' + hue4, str(b[3]), ' T&R:' + hue5, str(b[4]), ' Km:' + hue6, str(b[5]), ' Id:' + hue7, str(b[6]))
-    print ('')  
 
     input(hue1 + '\n Push enter to retun to menu')
 
 def m_show_specific_date():
     os.system('clear')
-    print ('')
-    date1 = input(hue1 + " From (Ex 2022-12-01): ")
+    date1 = input(hue1 + "\n From (Ex 2022-12-01): ")
     date2 = input(hue2 + " To   (Ex 2022-12-01): ")
     print ('')
     mycursor = mydb.cursor()
@@ -119,12 +117,11 @@ def m_show_specific_date():
     for b in result:
         print(hue3 + ' Date: ', str(b[1]), ' Start: ', str(b[2]), ' Stop: ', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
 
-    print ('')
     mycursor = mydb.cursor()
     kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
     mycursor.execute(kmsql)
     km = mycursor.fetchone()
-    print(hue4 + ' Total km: ', float(km[0]), 'Km')
+    print(hue4 + '\n Total km: ', float(km[0]), 'Km')
 
     milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
     mycursor.execute(milsql)
@@ -180,8 +177,7 @@ def m_tempdb_to_realdb():
     input(hue5 + '\n Push enter to retun to menu')
 
 def show_menu():
-    print ('')
-    print (hue1 + ' 1) Insert by date')
+    print (hue1 + '\n 1) Insert by date')
     print (hue2 + ' 2) Show totals')
     print (hue3 + ' 3) Show all rows')
     print (hue4 + ' 4) Show rows between specific dates')
@@ -215,5 +211,4 @@ def menu():
 
 if __name__ == '__main__':
     menu()
-
 
