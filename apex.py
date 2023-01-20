@@ -23,8 +23,6 @@ key = 'key.txt'
 googlemaps = "https://maps.googleapis.com/maps/api/distancematrix/xml?origins="
 program_home = '/home/apex/apex-cli/'
 protected_home = '/home/apex/protected/'
-tempoutput = 'tempoutput.txt'
-tempimport = 'tempimport.txt'
 mysqlconf = 'mysql.cnf'
 reportfile = 'report.csv'
 mydb = mysql.connector.connect(option_files=protected_home + mysqlconf)
@@ -35,76 +33,35 @@ with open(protected_home + key) as f:
 
 def m_collect_and_indatabase():
     os.system('clear')
+    url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&"
     print ('')
     mycursor = mydb.cursor()
     date = input(hue1 + " Date: ")
     start = input(hue2 + " Start: ")
     stop = input(hue3 + " Stop: ")
     t_o_r = input(hue4 + " T & R? (y / n) ")
-    url = ""+googlemaps+""+start+"&destinations="+stop+"&departure_time=now&key="+KEY+""
+    r = requests.get(url + "origins=" + start + "&destinations=" + stop + "&key=" + KEY)
 
     payload={}
     headers = {}
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+    kilometers = r.json()["rows"][0]["elements"][0]["distance"]["text"]
+    status = r.json()["rows"][0]["elements"][0]["status"]
 
-    with open(program_home + tempoutput, 'w') as f:
-        f.write('' + date + '\n' +start + '\n' +stop + '\n' + (str(response.text)) + t_o_r + '\n')
-        f.close
-
-    file = pathlib.Path(program_home + tempoutput)
-    if file.exists ():
-        f=open(tempoutput)
-        lines=f.readlines()
-        f.close
-    else:
-        print(hue5 + '\n File "' + program_home + tempoutput + '" Doesent exist. Run Collect first')
-        return
-
-    date = re.sub(r"[\n\t\s]*", "", (lines[0]))
-    start = re.sub(r"[\n\t]*", "", (lines[1]))
-    stop = re.sub(r"[\n\t]*", "", (lines[2]))
-    status = re.sub(r"[\n\t\s]*", "", (lines[5]))
-    distans = re.sub(r"[\n\t\s]*", "", (lines[17]))
-    t_o_r = re.sub(r"[\n\t\s]*", "", (lines[26]))
-
-    Original_Distans = distans
-    characters_to_remove = "<text>km</text>"
-    Ny_Distans = Original_Distans
-    for character in characters_to_remove:
-      Ny_Distans = Ny_Distans.replace(character, "")
-    Original_Status = status
-    characters_to_remove = "<status></status>"
-    Ny_Status = Original_Status
-    for character in characters_to_remove:
-      Ny_Status = Ny_Status.replace(character, "")
-
-    result = (date, start, stop, Ny_Distans, t_o_r + '\n')
-    time = datetime.datetime.now()
-
-    print (hue5 + ' Status: ' + Ny_Status)
-    print (hue6 + ' Datum: ' + date + '\n' + hue7 + ' Start: ' + start + '\n' + hue8 + ' Stop: ' + stop + '\n' + hue9 + ' T&R: ' + t_o_r +  '\n' + hue10 + ' Km: ' + Ny_Distans + res)
-
-    file = pathlib.Path(program_home + tempoutput)
-    if file.exists ():
-        f=open(tempoutput)
-        lines=f.readlines()
-        f.close
-    else:
-        print(hue7 + '\n File "' + program_home + tempoutput + '" Doesent exist. Run Collect first')
-        return
+    print (hue5 + ' Status: ' + status)
+    print (hue6 + ' Date: ' + date + '\n' + hue7 + ' Start: ' + start + '\n' + hue8 + ' Stop: ' + stop + '\n' + hue9 + ' T&R: ' + t_o_r +  '\n' + hue10 + ' Km: ' + kilometers)
 
     ychoice = ['yes', 'Yes', 'YES', 'Y', 'y', 'ja', 'Ja', 'JA', 'J', 'j']
     Continue = input(hue11 + ' Import into the database? (y / n) ')
     if Continue in ychoice:
 
         if t_o_r in ychoice:
-            print (hue12 + ' T&R so we took x2 on km: ' + Ny_Distans + ' when we added it to the database')
+            print (hue12 + ' T&R so we took x2 on km: ' + kilometers + ' when we added it to the database')
             sql = "INSERT INTO report (date, startadress, stopadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s * 2)"
         else:
             sql = "INSERT INTO report (date, startadress, stopadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s)"
 
-        val = (date, start, stop, t_o_r, Ny_Distans)
+        val = (date, start, stop, t_o_r, kilometers)
         mycursor.execute(sql, val)
         mydb.commit()
         sql = "SELECT * FROM apex.report ORDER BY id DESC LIMIT 1"
@@ -253,11 +210,6 @@ def menu():
         elif choice == '6':
             m_tempdb_to_realdb()
         elif choice == 'q':
-            file = pathlib.Path(program_home + tempoutput)
-            if file.exists ():
-                os.remove(program_home + tempoutput)
-                mydb.close()
-                return
             mydb.close()
             return
         else:
