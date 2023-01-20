@@ -6,7 +6,7 @@
 ###########################
 
 import os
-import requests
+import requests, json
 import re
 import sys
 import mysql.connector
@@ -199,6 +199,7 @@ def m_import_csv():
 
 def m_tempdb_to_realdb():
     os.system('clear')
+    url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&"
     print (hue1 + '\n Tempdb -> RealDB\n')
     mycursor = mydb.cursor()
     allrowssql = "SELECT * FROM apex.tempimport ORDER BY tempdate ASC"
@@ -211,12 +212,15 @@ def m_tempdb_to_realdb():
         tr = str(b[4])
         km = str(b[5])
         id = str(b[6])
-        url = ""+googlemaps+""+start+"&destinations="+stop+"&departure_time=now&key="+KEY+""
+        r = requests.get(url + "origins=" + start + "&destinations=" + stop + "&key=" + KEY)
         payload={}
         headers = {}
-        response = requests.request("GET", url, headers=headers, data=payload)
+        kilometers = r.json()["rows"][0]["elements"][0]["distance"]["text"]
+        status = r.json()["rows"][0]["elements"][0]["status"]
+        #x = r.json()
+        #print (x)
 
-        print('' + date + '\n' + start + '\n' +stop + '\n' + tr + '\n' + (str(response.text)))
+        print(hue1 + date + hue2 + '\tStart: ' + start + hue3 + '\tStop: ' + stop + hue4 + '\tToR: ' + tr + hue5 + '\tKm: ' + kilometers + hue6 + '\tStatus: ' + status)
 
     input(hue5 + '\n Push enter to retun to menu')
 
