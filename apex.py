@@ -37,11 +37,11 @@ def m_collect_and_indatabase():
     os.system('clear')
     print ('')
     mycursor = mydb.cursor()
-    datum = input(hue1 + " Date: ")
+    date = input(hue1 + " Date: ")
     start = input(hue2 + " Start: ")
-    stopp = input(hue3 + " Stop: ")
-    spec = input(hue4 + " T & R? (y / n) ")
-    url = ""+googlemaps+""+start+"&destinations="+stopp+"&departure_time=now&key="+KEY+""
+    stop = input(hue3 + " Stop: ")
+    t_o_r = input(hue4 + " T & R? (y / n) ")
+    url = ""+googlemaps+""+start+"&destinations="+stop+"&departure_time=now&key="+KEY+""
 
     payload={}
     headers = {}
@@ -49,7 +49,7 @@ def m_collect_and_indatabase():
     response = requests.request("GET", url, headers=headers, data=payload)
 
     with open(program_home + tempoutput, 'w') as f:
-        f.write('' +datum + '\n' +start + '\n' +stopp + '\n' + (str(response.text)) +spec + '\n')
+        f.write('' + date + '\n' +start + '\n' +stop + '\n' + (str(response.text)) + t_o_r + '\n')
         f.close
 
     file = pathlib.Path(program_home + tempoutput)
@@ -61,12 +61,12 @@ def m_collect_and_indatabase():
         print(hue5 + '\n File "' + program_home + tempoutput + '" Doesent exist. Run Collect first')
         return
 
-    datum = re.sub(r"[\n\t\s]*", "", (lines[0]))
+    date = re.sub(r"[\n\t\s]*", "", (lines[0]))
     start = re.sub(r"[\n\t]*", "", (lines[1]))
-    stopp = re.sub(r"[\n\t]*", "", (lines[2]))
+    stop = re.sub(r"[\n\t]*", "", (lines[2]))
     status = re.sub(r"[\n\t\s]*", "", (lines[5]))
     distans = re.sub(r"[\n\t\s]*", "", (lines[17]))
-    spec = re.sub(r"[\n\t\s]*", "", (lines[26]))
+    t_o_r = re.sub(r"[\n\t\s]*", "", (lines[26]))
 
     Original_Distans = distans
     characters_to_remove = "<text>km</text>"
@@ -79,11 +79,11 @@ def m_collect_and_indatabase():
     for character in characters_to_remove:
       Ny_Status = Ny_Status.replace(character, "")
 
-    result = (datum, start, stopp, Ny_Distans, spec + '\n')
+    result = (date, start, stop, Ny_Distans, t_o_r + '\n')
     time = datetime.datetime.now()
 
     print (hue5 + ' Status: ' + Ny_Status)
-    print (hue6 + ' Datum: ' + datum + '\n' + hue7 + ' Start: ' + start + '\n' + hue8 + ' Stop: ' + stopp + '\n' + hue9 + ' T&R: ' + spec +  '\n' + hue10 + ' Km: ' + Ny_Distans + res)
+    print (hue6 + ' Datum: ' + date + '\n' + hue7 + ' Start: ' + start + '\n' + hue8 + ' Stop: ' + stop + '\n' + hue9 + ' T&R: ' + t_o_r +  '\n' + hue10 + ' Km: ' + Ny_Distans + res)
 
     file = pathlib.Path(program_home + tempoutput)
     if file.exists ():
@@ -98,13 +98,13 @@ def m_collect_and_indatabase():
     Continue = input(hue11 + ' Import into the database? (y / n) ')
     if Continue in ychoice:
 
-        if spec in ychoice:
+        if t_o_r in ychoice:
             print (hue12 + ' T&R so we took x2 on km: ' + Ny_Distans + ' when we added it to the database')
-            sql = "INSERT INTO report (datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s * 2)"
+            sql = "INSERT INTO report (date, startadress, stopadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s * 2)"
         else:
-            sql = "INSERT INTO report (datum, startadress, stoppadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s)"
+            sql = "INSERT INTO report (date, startadress, stopadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s)"
 
-        val = (datum, start, stopp, spec, Ny_Distans)
+        val = (date, start, stop, t_o_r, Ny_Distans)
         mycursor.execute(sql, val)
         mydb.commit()
         sql = "SELECT * FROM apex.report ORDER BY id DESC LIMIT 1"
@@ -141,7 +141,7 @@ def m_show_all_rows():
     os.system('clear')
     print ('')
     mycursor = mydb.cursor()
-    allrowssql = "SELECT * FROM apex.report ORDER BY datum ASC"
+    allrowssql = "SELECT * FROM apex.report ORDER BY date ASC"
     mycursor.execute(allrowssql)
     result = mycursor.fetchall()
     for b in result:
@@ -157,7 +157,7 @@ def m_show_specific_date():
     date2 = input(hue2 + " To   (Ex 2022-12-01): ")
     print ('')
     mycursor = mydb.cursor()
-    allrowssql = "SELECT * FROM apex.report WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"' ORDER BY datum ASC"
+    allrowssql = "SELECT * FROM apex.report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"' ORDER BY date ASC"
     mycursor.execute(allrowssql)
     result = mycursor.fetchall()
     for b in result:
@@ -165,17 +165,17 @@ def m_show_specific_date():
 
     print ('')
     mycursor = mydb.cursor()
-    kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
+    kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
     mycursor.execute(kmsql)
     km = mycursor.fetchone()
     print(hue4 + ' Total km: ', float(km[0]), 'Km')
 
-    milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
+    milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
     mycursor.execute(milsql)
     mil = mycursor.fetchone()
     print(hue5 + ' Total mil: ', float(mil[0]), 'Mil')
 
-    seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM report WHERE DATE(datum) BETWEEN '"+date1+"' AND '"+date2+"'"
+    seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
     mycursor.execute(seksql)
     sek = mycursor.fetchone()
     print(hue6 + ' Sum sek: ', float(sek[0]), 'Kr')
