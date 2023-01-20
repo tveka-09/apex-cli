@@ -20,7 +20,6 @@ import argparse
 from pyberro import *
 
 key = 'key.txt'
-googlemaps = "https://maps.googleapis.com/maps/api/distancematrix/xml?origins="
 program_home = '/home/apex/apex-cli/'
 protected_home = '/home/apex/protected/'
 mysqlconf = 'mysql.cnf'
