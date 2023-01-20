@@ -183,13 +183,13 @@ def m_tempdb_to_realdb():
 
 def show_menu():
     print ('')
-    print (hue1 + ' 1) Collect and insert to database                ')
-    print (hue2 + ' 2) Show totals                                   ')
-    print (hue3 + ' 3) Show all rows in database                     ')
-    print (hue4 + ' 4) Show rows in database between specific dates  ')
-    print (hue5 + ' 5) Import into database from csv file            ')
-    print (hue6 + ' 6) Tempdb to Realdb                              ')
-    print (hue7 + ' Q) Quit                                          ')
+    print (hue1 + ' 1) Insert by date')
+    print (hue2 + ' 2) Show totals')
+    print (hue3 + ' 3) Show all rows')
+    print (hue4 + ' 4) Show rows between specific dates')
+    print (hue5 + ' 5) Bulk import from csv file')
+    print (hue6 + ' 6) Tempdb to Realdb')
+    print (hue7 + ' Q) Quit')
 
 def menu():
     while True:
