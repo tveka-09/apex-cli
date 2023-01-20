@@ -25,6 +25,7 @@ protected_home = '/home/apex/protected/'
 mysqlconf = 'mysql.cnf'
 reportfile = 'report.csv'
 mydb = mysql.connector.connect(option_files=protected_home + mysqlconf)
+url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&"
 
 with open(protected_home + key) as f:
     KEY = f.readline()
@@ -32,7 +33,6 @@ with open(protected_home + key) as f:
 
 def m_collect_and_indatabase():
     os.system('clear')
-    url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&"
     print ('')
     mycursor = mydb.cursor()
     date = input(hue1 + " Date: ")
@@ -72,7 +72,7 @@ def m_collect_and_indatabase():
     else:
         print (' No database insert')
     
-    input(hue14 + '\n Push enter to retun to menu' + res)
+    input(hue14 + '\n Push enter to retun to menu')
 
 def m_show_total():
     mycursor = mydb.cursor()
@@ -104,7 +104,7 @@ def m_show_all_rows():
         print(hue1 + ' Date:' + hue2, str(b[1]), ' Start:' + hue3, str(b[2]), ' Stop:' + hue4, str(b[3]), ' T&R:' + hue5, str(b[4]), ' Km:' + hue6, str(b[5]), ' Id:' + hue7, str(b[6]))
     print ('')  
 
-    input(hue1 + '\n Push enter to retun to menu' + res)
+    input(hue1 + '\n Push enter to retun to menu')
 
 def m_show_specific_date():
     os.system('clear')
@@ -155,7 +155,6 @@ def m_import_csv():
 
 def m_tempdb_to_realdb():
     os.system('clear')
-    url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&"
     print (hue1 + '\n Tempdb -> RealDB\n')
     mycursor = mydb.cursor()
     allrowssql = "SELECT * FROM apex.tempimport ORDER BY tempdate ASC"
@@ -195,7 +194,6 @@ def menu():
         os.system('clear')
         show_menu()
         choice = input(hue6 + ' Enter your choice: ').lower()
-        print (res)
         if choice == '1':
             m_collect_and_indatabase()
         elif choice == '2':
@@ -210,10 +208,12 @@ def menu():
             m_tempdb_to_realdb()
         elif choice == 'q':
             mydb.close()
+            print ('')
             return
         else:
             print('\nNot a correct choice, please try again')
 
 if __name__ == '__main__':
     menu()
+
 
