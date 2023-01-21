@@ -124,28 +124,53 @@ def m_show_specific_date():
     date1 = input(hue1 + "\n From (Ex 2022-12-01): ")
     date2 = input(hue2 + " To   (Ex 2022-12-01): ")
     print ('')
-    mycursor = mydb.cursor()
+    mycursor = mydb.cursor(buffered=True)
     allrowssql = "SELECT * FROM apex.report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"' ORDER BY date ASC"
     mycursor.execute(allrowssql)
-    result = mycursor.fetchall()
-    for b in result:
-        print(hue3 + ' Date: ', str(b[1]), ' Start: ', str(b[2]), ' Stop: ', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
+    result = mycursor.fetchone()
+    if result != None:
+        allrowssql = "SELECT * FROM apex.report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"' ORDER BY date ASC"
+        mycursor.execute(allrowssql)
+        result = mycursor.fetchall()
+        for b in result:
+            print(hue3 + ' Date: ', str(b[1]), ' Start: ', str(b[2]), ' Stop: ', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
 
-    mycursor = mydb.cursor()
-    kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
-    mycursor.execute(kmsql)
-    km = mycursor.fetchone()
-    print(hue4 + '\n Total km: ', float(km[0]), 'Km')
+    
+        kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
+        mycursor.execute(kmsql)
+        km = mycursor.fetchone()
+        if km != None:
+            kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
+            mycursor.execute(kmsql)
+            km = mycursor.fetchone()
+            print(hue4 + '\n Total km: ', float(km[0]), 'Km')
+        else:
+            print(hue2 + '\n Nothing in the database!')
 
-    milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
-    mycursor.execute(milsql)
-    mil = mycursor.fetchone()
-    print(hue5 + ' Total mil: ', float(mil[0]), 'Mil')
+        milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
+        mycursor.execute(milsql)
+        mil = mycursor.fetchone()
+        if mil != None:
+            milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
+            mycursor.execute(milsql)
+            mil = mycursor.fetchone()
+            print(hue5 + ' Total mil: ', float(mil[0]), 'Mil')
+        else:
+            print(hue2 + '\n Nothing in the database!')
 
-    seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
-    mycursor.execute(seksql)
-    sek = mycursor.fetchone()
-    print(hue6 + ' Sum sek: ', float(sek[0]), 'Kr')
+        seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
+        mycursor.execute(seksql)
+        sek = mycursor.fetchone()
+        if sek != None:
+            seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
+            mycursor.execute(seksql)
+            sek = mycursor.fetchone()
+            print(hue6 + ' Sum sek: ', float(sek[0]), 'Kr')
+        else:
+            print(hue2 + '\n Nothing in the database!')
+
+    else:
+        print(' Nothing between the dates')
 
     input(hue7 + '\n Push enter to retun to menu')
 
@@ -225,4 +250,3 @@ def menu():
 
 if __name__ == '__main__':
     menu()
-
