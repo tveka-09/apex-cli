@@ -76,32 +76,45 @@ def m_collect_and_indatabase():
 def m_show_total():
     os.system('clear')
     mycursor = mydb.cursor()
-    kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report"
-    mycursor.execute(kmsql)
-    km = mycursor.fetchone()
-    print(hue7 + '\n Total: ', float(km[0]), 'Km')
+    checkdb = "SELECT * FROM report"
+    mycursor.execute(checkdb)
+    result = mycursor.fetchone()
+    if result != None:
 
-    milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report"
-    mycursor.execute(milsql)
-    mil = mycursor.fetchone()
-    print(hue8 + ' Total: ', float(mil[0]), 'Mil')
+        kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report"
+        mycursor.execute(kmsql)
+        print(hue7 + '\n Total: ', float(km[0]), 'Km')
 
-    seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM report"
-    mycursor.execute(seksql)
-    sek = mycursor.fetchone()
-    print(hue9 + ' Total: ', float(sek[0]), 'Sek')
+        milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report"
+        mycursor.execute(milsql)
+        mil = mycursor.fetchone()
+        print(hue8 + ' Total: ', float(mil[0]), 'Mil')
+
+        seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM report"
+        mycursor.execute(seksql)
+        sek = mycursor.fetchone()
+        print(hue9 + ' Total: ', float(sek[0]), 'Sek')
+
+    else:
+        print(hue2 + '\n Nothing in the database!')
 
     input(hue10 + '\n Push enter to retun to menu')
 
 def m_show_all_rows():
     os.system('clear')
-    print ('')
     mycursor = mydb.cursor()
-    allrowssql = "SELECT * FROM apex.report ORDER BY date ASC"
-    mycursor.execute(allrowssql)
-    result = mycursor.fetchall()
-    for b in result:
-        print(hue1 + ' Date:' + hue2, str(b[1]), ' Start:' + hue3, str(b[2]), ' Stop:' + hue4, str(b[3]), ' T&R:' + hue5, str(b[4]), ' Km:' + hue6, str(b[5]), ' Id:' + hue7, str(b[6]))
+    checkdb = "SELECT * FROM report"
+    mycursor.execute(checkdb)
+    result = mycursor.fetchone()
+    if result != None:
+        print ('')
+        allrowssql = "SELECT * FROM apex.report ORDER BY date ASC"
+        mycursor.execute(allrowssql)
+        result = mycursor.fetchall()
+        for b in result:
+            print(hue1 + ' Date:' + hue2, str(b[1]), ' Start:' + hue3, str(b[2]), ' Stop:' + hue4, str(b[3]), ' T&R:' + hue5, str(b[4]), ' Km:' + hue6, str(b[5]), ' Id:' + hue7, str(b[6]))
+    else:
+        print(hue2 + '\n Nothing in the database!')
 
     input(hue1 + '\n Push enter to retun to menu')
 
