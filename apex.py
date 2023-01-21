@@ -83,6 +83,7 @@ def m_show_total():
 
         kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report"
         mycursor.execute(kmsql)
+        km = mycursor.fetchone()
         print(hue7 + '\n Total: ', float(km[0]), 'Km')
 
         milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report"
