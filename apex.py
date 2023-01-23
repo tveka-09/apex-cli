@@ -225,7 +225,7 @@ def menu():
     while True:
         os.system('clear')
         show_menu()
-        choice = input(hue6 + ' Enter your choice: ').lower()
+        choice = input(hue8 + ' Enter your choice: ').lower()
         if choice == '1':
             m_collect_and_indatabase()
         elif choice == '2':
