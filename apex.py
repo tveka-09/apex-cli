@@ -182,7 +182,7 @@ def m_import_csv():
 
     file = pathlib.Path(protected_home + reportfile)
     if not file.exists ():
-        print (hue1 + ' No file with name "' +  protected_home + reportfile + '" was found!')
+        print (hue1 + ' File "' +  protected_home + reportfile + '" was not found!')
         input(hue7 + '\n Push enter to retun to menu')
         menu()
         exit ()
@@ -219,7 +219,6 @@ def m_tempdb_to_realdb():
 
         ychoice = ['yes', 'y', 'ja', 'j', 'J', 'Ja', 'JA', 'YES', 'YEs', 'Yes', 'Y']
         if tr in ychoice:
-            print (hue12 + '\n ToR were true so we took x2 on km: ' + kilometers + ' before we inserted it into the database\n')
             sql = "INSERT INTO report (date, startadress, stopadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s * 2)"
         else:
             sql = "INSERT INTO report (date, startadress, stopadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s)"
