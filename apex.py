@@ -37,7 +37,7 @@ def m_collect_and_indatabase():
     date = input(hue1 + "\n Date: ")
     start = input(hue2 + " Start: ")
     stop = input(hue3 + " Stop: ")
-    t_o_r = input(hue4 + " T & R? (y / n) ")
+    t_o_r = input(hue4 + " T & R? (y / n) ").lower()
     r = requests.get(url + "origins=" + start + "&destinations=" + stop + "&key=" + KEY)
 
     payload={}
@@ -49,8 +49,8 @@ def m_collect_and_indatabase():
     print (hue5 + ' Status: ' + status)
     print (hue6 + ' Date: ' + date + '\n' + hue7 + ' Start: ' + start + '\n' + hue8 + ' Stop: ' + stop + '\n' + hue9 + ' T&R: ' + t_o_r +  '\n' + hue10 + ' Km: ' + kilometers)
 
-    ychoice = ['yes', 'Yes', 'YES', 'Y', 'y', 'ja', 'Ja', 'JA', 'J', 'j']
-    Continue = input(hue11 + ' Import into the database? (y / n) ')
+    ychoice = ['yes', 'y', 'ja', 'j']
+    Continue = input(hue11 + ' Import into the database? (y / n) ').lower()
     if Continue in ychoice:
 
         if t_o_r in ychoice:
@@ -75,7 +75,7 @@ def m_collect_and_indatabase():
 
 def m_show_total():
     os.system('clear')
-    mycursor = mydb.cursor()
+    mycursor = mydb.cursor(buffered=True)
     checkdb = "SELECT * FROM report"
     mycursor.execute(checkdb)
     result = mycursor.fetchone()
@@ -103,7 +103,7 @@ def m_show_total():
 
 def m_show_all_rows():
     os.system('clear')
-    mycursor = mydb.cursor()
+    mycursor = mydb.cursor(buffered=True)
     checkdb = "SELECT * FROM report"
     mycursor.execute(checkdb)
     result = mycursor.fetchone()
@@ -208,8 +208,6 @@ def m_tempdb_to_realdb():
         headers = {}
         kilometers = r.json()["rows"][0]["elements"][0]["distance"]["text"]
         status = r.json()["rows"][0]["elements"][0]["status"]
-        #x = r.json()
-        #print (x)
 
         print(hue1 + date + hue2 + '\tStart: ' + start + hue3 + '\tStop: ' + stop + hue4 + '\tToR: ' + tr + hue5 + '\tKm: ' + kilometers + hue6 + '\tStatus: ' + status)
 
@@ -221,7 +219,6 @@ def show_menu():
     print (hue3 + ' 3) Show all rows')
     print (hue4 + ' 4) Show rows between specific dates')
     print (hue5 + ' 5) Bulk import from csv file')
-    print (hue6 + ' 6) Tempdb to Realdb')
     print (hue7 + ' Q) Quit')
 
 def menu():
@@ -239,7 +236,7 @@ def menu():
             m_show_specific_date()
         elif choice == '5':
             m_import_csv()
-        elif choice == '6':
+            sleep (1)
             m_tempdb_to_realdb()
         elif choice == 'q':
             mydb.close()
@@ -250,3 +247,4 @@ def menu():
 
 if __name__ == '__main__':
     menu()
+
