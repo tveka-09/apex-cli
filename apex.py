@@ -179,7 +179,7 @@ def m_import_csv():
     os.system('clear')
     print ('')
     mycursor = mydb.cursor()
-
+    mycursor.execute("TRUNCATE TABLE tempimport")
     file = pathlib.Path(protected_home + reportfile)
     if not file.exists ():
         print (hue1 + ' File "' +  protected_home + reportfile + '" was not found!')
@@ -230,6 +230,7 @@ def m_tempdb_to_realdb():
         mycursor.execute(sql)
         result = mycursor.fetchone()
         print(hue13 + ' Date:', str(result[1]), ' Start:', str(result[2]), ' Stop:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
+        mycursor.execute("TRUNCATE TABLE tempimport")
 
     input(hue5 + '\n Push enter to retun to menu')
 
