@@ -143,7 +143,7 @@ def m_show_specific_date():
             kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
             mycursor.execute(kmsql)
             km = mycursor.fetchone()
-            print(hue4 + '\n Total km: ', float(km[0]), 'Km')
+            print(hue4 + '\n Total:\t', float(km[0]), '\tKm')
         else:
             print(hue2 + '\n Nothing in the database!')
 
@@ -154,7 +154,7 @@ def m_show_specific_date():
             milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
             mycursor.execute(milsql)
             mil = mycursor.fetchone()
-            print(hue5 + ' Total mil: ', float(mil[0]), 'Mil')
+            print(hue5 + ' Total:\t', float(mil[0]), '\tMil')
         else:
             print(hue2 + '\n Nothing in the database!')
 
@@ -165,7 +165,7 @@ def m_show_specific_date():
             seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
             mycursor.execute(seksql)
             sek = mycursor.fetchone()
-            print(hue6 + ' Sum sek: ', float(sek[0]), 'Kr')
+            print(hue6 + ' Total:\t', float(sek[0]), '\tKr')
         else:
             print(hue2 + '\n Nothing in the database!')
 
