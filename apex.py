@@ -24,6 +24,7 @@ program_home = '/home/apex/apex-cli/'
 protected_home = '/home/apex/protected/'
 mysqlconf = 'mysql.cnf'
 reportfile = 'report.csv'
+donereportfile = 'donereport.csv'
 mydb = mysql.connector.connect(option_files=protected_home + mysqlconf)
 url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&"
 
@@ -176,8 +177,15 @@ def m_show_specific_date():
 
 def m_import_csv():
     os.system('clear')
-    print (hue1 + '\n Below rows read from file: "' + protected_home + reportfile + '" and imported into the database:\n')
+    print ('')
     mycursor = mydb.cursor()
+
+    file = pathlib.Path(protected_home + reportfile)
+    if not file.exists ():
+        print (hue1 + ' No file with name "' +  protected_home + reportfile + '" was found!')
+        input(hue7 + '\n Push enter to retun to menu')
+        menu()
+        exit ()
 
     with open(protected_home + reportfile) as f:
         reader = csv.reader(f)
@@ -187,7 +195,7 @@ def m_import_csv():
                        """, row), print(hue1 + ' Date:' + hue2, str(row[0]), '\t' +  'Start:' + hue3, str(row[1]), '\t\t' + 'Stop:' + hue4, str(row[2]), '\t' + 'Km:' + hue6, str(row[3]), '\t' + 'T&R:' + hue5, str(row[4]))
 
     mydb.commit()
-    input(hue5 + '\n Push enter to retun to menu')
+    os.rename(protected_home + reportfile, protected_home + donereportfile)
 
 def m_tempdb_to_realdb():
     os.system('clear')
