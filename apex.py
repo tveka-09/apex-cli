@@ -69,7 +69,7 @@ def m_collect_and_indatabase():
         print(hue13 + ' Date:', str(result[1]), ' Start:', str(result[2]), ' Stop:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
 
     else:
-        print (' No database insert')
+        print (' Nothing inserted')
     
     input(hue14 + '\n Push enter to retun to menu')
 
@@ -209,7 +209,20 @@ def m_tempdb_to_realdb():
         kilometers = r.json()["rows"][0]["elements"][0]["distance"]["text"]
         status = r.json()["rows"][0]["elements"][0]["status"]
 
-        print(hue1 + date + hue2 + '\tStart: ' + start + hue3 + '\tStop: ' + stop + hue4 + '\tToR: ' + tr + hue5 + '\tKm: ' + kilometers + hue6 + '\tStatus: ' + status)
+        ychoice = ['yes', 'y', 'ja', 'j', 'J', 'Ja', 'JA', 'YES', 'YEs', 'Yes', 'Y']
+        if tr in ychoice:
+            print (hue12 + '\n ToR were true so we took x2 on km: ' + kilometers + ' before we inserted it into the database\n')
+            sql = "INSERT INTO report (date, startadress, stopadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s * 2)"
+        else:
+            sql = "INSERT INTO report (date, startadress, stopadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s)"
+
+        val = (date, start, stop, tr, kilometers)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        sql = "SELECT * FROM apex.report ORDER BY id DESC LIMIT 1"
+        mycursor.execute(sql)
+        result = mycursor.fetchone()
+        print(hue13 + ' Date:', str(result[1]), ' Start:', str(result[2]), ' Stop:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
 
     input(hue5 + '\n Push enter to retun to menu')
 
