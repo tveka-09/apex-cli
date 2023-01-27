@@ -44,18 +44,17 @@ def m_collect_and_indatabase():
     payload={}
     headers = {}
 
-    kilometers = r.json()["rows"][0]["elements"][0]["distance"]["text"]
+    #kilometers = r.json()["rows"][0]["elements"][0]["distance"]["text"]
+    kilometers = r.json()["rows"][0]["elements"][0]["distance"]["value"] /1000
     status = r.json()["rows"][0]["elements"][0]["status"]
 
     print (hue5 + ' Status: ' + status)
-    print (hue6 + ' Date: ' + date + '\n' + hue7 + ' Start: ' + start + '\n' + hue8 + ' Stop: ' + stop + '\n' + hue9 + ' T&R: ' + t_o_r +  '\n' + hue10 + ' Km: ' + kilometers)
+    print (hue6 + ' Date: ' + date + '\n' + hue7 + ' Start: ' + start + '\n' + hue8 + ' Stop: ' + stop + '\n' + hue9 + ' T&R: ' + t_o_r +  '\n' + hue10 + ' Km: ', kilometers)
 
     ychoice = ['yes', 'y', 'ja', 'j']
     Continue = input(hue11 + ' Import into the database? (y / n) ').lower()
     if Continue in ychoice:
-
         if t_o_r in ychoice:
-            print (hue12 + ' T&R so we took x2 on km: ' + kilometers + ' when we added it to the database')
             sql = "INSERT INTO report (date, startadress, stopadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s * 2)"
         else:
             sql = "INSERT INTO report (date, startadress, stopadress, t_o_r, km) VALUES (%s, %s, %s, %s, %s)"
@@ -70,55 +69,9 @@ def m_collect_and_indatabase():
         print(hue13 + ' Date:', str(result[1]), ' Start:', str(result[2]), ' Stop:', str(result[3]), ' T&R:', str(result[4]), ' Km:', str(result[5]), ' Id:', str(result[6]))
 
     else:
-        print (' Nothing inserted')
+        print (' Nothing imported')
     
-    input(hue14 + '\n Push enter to retun to menu')
-
-def m_show_total():
-    os.system('clear')
-    mycursor = mydb.cursor(buffered=True)
-    checkdb = "SELECT * FROM report"
-    mycursor.execute(checkdb)
-    result = mycursor.fetchone()
-    if result != None:
-
-        kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report"
-        mycursor.execute(kmsql)
-        km = mycursor.fetchone()
-        print(hue7 + '\n Total: ', float(km[0]), 'Km')
-
-        milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report"
-        mycursor.execute(milsql)
-        mil = mycursor.fetchone()
-        print(hue8 + ' Total: ', float(mil[0]), 'Mil')
-
-        seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM report"
-        mycursor.execute(seksql)
-        sek = mycursor.fetchone()
-        print(hue9 + ' Total: ', float(sek[0]), 'Sek')
-
-    else:
-        print(hue2 + '\n Nothing in the database!')
-
-    input(hue10 + '\n Push enter to retun to menu')
-
-def m_show_all_rows():
-    os.system('clear')
-    mycursor = mydb.cursor(buffered=True)
-    checkdb = "SELECT * FROM report"
-    mycursor.execute(checkdb)
-    result = mycursor.fetchone()
-    if result != None:
-        print ('')
-        allrowssql = "SELECT * FROM apex.report ORDER BY date ASC"
-        mycursor.execute(allrowssql)
-        result = mycursor.fetchall()
-        for b in result:
-            print(hue1 + ' Date:' + hue2, str(b[1]), ' Start:' + hue3, str(b[2]), ' Stop:' + hue4, str(b[3]), ' T&R:' + hue5, str(b[4]), ' Km:' + hue6, str(b[5]), ' Id:' + hue7, str(b[6]))
-    else:
-        print(hue2 + '\n Nothing in the database!')
-
-    input(hue1 + '\n Push enter to retun to menu')
+    input(hue8 + '\n Push enter to retun to menu')
 
 def m_show_specific_date():
     os.system('clear')
@@ -133,9 +86,9 @@ def m_show_specific_date():
         allrowssql = "SELECT * FROM apex.report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"' ORDER BY date ASC"
         mycursor.execute(allrowssql)
         result = mycursor.fetchall()
+        print(hue1 + ' Date,\t' + hue2, ' Start,\t' + hue3,' Stop,\t' + hue4, 'Km,\t' +  hue5 + 'T&R')
         for b in result:
-            print(hue3 + ' Date: ', str(b[1]), ' Start: ', str(b[2]), ' Stop: ', str(b[3]), ' T&R:', str(b[4]), ' Km:', str(b[5]), ' Id:', str(b[6]))
-
+            print(hue1, str(b[1]) + ',\t', hue2, str(b[2]) + ',\t', hue3, str(b[3]) + ',\t', hue4, str(b[5]) + ',\t', hue5, str(b[4]))
     
         kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
         mycursor.execute(kmsql)
@@ -144,7 +97,7 @@ def m_show_specific_date():
             kmsql = "SELECT SUM(COALESCE(`km`, 0.0)) AS KM FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
             mycursor.execute(kmsql)
             km = mycursor.fetchone()
-            print(hue4 + '\n Total:\t', float(km[0]), '\tKm')
+            print(hue4 + '\n Total:\t', float(km[0]), ' Km')
         else:
             print(hue2 + '\n Nothing in the database!')
 
@@ -155,7 +108,7 @@ def m_show_specific_date():
             milsql = "SELECT SUM(COALESCE(`km`, 0.0) /10) AS MIL FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
             mycursor.execute(milsql)
             mil = mycursor.fetchone()
-            print(hue5 + ' Total:\t', float(mil[0]), '\tMil')
+            print(hue5 + ' Total:\t', float(mil[0]), ' Mil')
         else:
             print(hue2 + '\n Nothing in the database!')
 
@@ -166,12 +119,12 @@ def m_show_specific_date():
             seksql = "SELECT SUM(COALESCE(`km`, 0.0) /10 * 9.5) AS SEK FROM report WHERE DATE(date) BETWEEN '"+date1+"' AND '"+date2+"'"
             mycursor.execute(seksql)
             sek = mycursor.fetchone()
-            print(hue6 + ' Total:\t', float(sek[0]), '\tKr')
+            print(hue6 + ' Total:\t', float(sek[0]), ' Sek')
         else:
             print(hue2 + '\n Nothing in the database!')
 
     else:
-        print(' Nothing between the dates')
+        print(' Nothing between that dates')
 
     input(hue7 + '\n Push enter to retun to menu')
 
@@ -214,7 +167,8 @@ def m_tempdb_to_realdb():
         r = requests.get(url + "origins=" + start + "&destinations=" + stop + "&key=" + KEY)
         payload={}
         headers = {}
-        kilometers = r.json()["rows"][0]["elements"][0]["distance"]["text"]
+        #kilometers = r.json()["rows"][0]["elements"][0]["distance"]["text"]
+        kilometers = r.json()["rows"][0]["elements"][0]["distance"]["value"] /1000
         status = r.json()["rows"][0]["elements"][0]["status"]
 
         ychoice = ['yes', 'y', 'ja', 'j', 'J', 'Ja', 'JA', 'YES', 'YEs', 'Yes', 'Y']
@@ -235,11 +189,9 @@ def m_tempdb_to_realdb():
     input(hue5 + '\n Push enter to retun to menu')
 
 def show_menu():
-    print (hue1 + '\n 1) Insert by date')
-    print (hue2 + ' 2) Show totals')
-    print (hue3 + ' 3) Show all rows')
-    print (hue4 + ' 4) Show rows between specific dates')
-    print (hue5 + ' 5) Bulk import from csv file')
+    print (hue1 + '\n 1) Report by date')
+    print (hue4 + ' 2) Show report between dates')
+    print (hue5 + ' 3) Bulk import report from csv file')
     print (hue7 + ' Q) Quit')
 
 def menu():
@@ -250,12 +202,8 @@ def menu():
         if choice == '1':
             m_collect_and_indatabase()
         elif choice == '2':
-            m_show_total()
-        elif choice == '3':
-            m_show_all_rows()
-        elif choice == '4':
             m_show_specific_date()
-        elif choice == '5':
+        elif choice == '3':
             m_import_csv()
             sleep (1)
             m_tempdb_to_realdb()
